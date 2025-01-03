@@ -12,7 +12,8 @@ def game_sobstvenno(*args, **kwargs):
     running = True
     screen.fill('black')
     all_sprites = pygame.sprite.Group()
-    hh = AbstractSpriteClass(all_sprites, 1, 1, SpritePictures(p='valentine_heart.png'))
+    hh = AbstractSpriteClass(all_sprites, 1, 1,
+                             SpritePictures(N1='valentine_heart.png', N2='valentine_broken_heart.png'))
     hh.scale(18, 18)
     all_sprites.draw(screen)
     healph_bar = Board(6, 1, 0, 0, 21)
