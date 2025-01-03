@@ -4,22 +4,31 @@ import sys
 
 
 class Board:
-    def __init__(self, width, height, left, top, cell_size):
+    def __init__(self, width: int, height: int, left: int, top: int, cell_size: int):
         self.width = width
         self.height = height
-        self.left = 70
-        self.top = 70
-        self.cell_size = 50
+        self.left = left
+        self.top = top
+        self.cell_size = cell_size
+        self.rect_color = pygame.Color('white')
 
     def set_view(self, left, top, cell_size):
         self.left = left
         self.top = top
         self.cell_size = cell_size
 
+    def change_rect_color(self, color: str | tuple, hsva=False, string=False):
+        if hsva:
+            self.rect_color.hsva = color
+        elif string:
+            self.rect_color = pygame.Color(color)
+        else:
+            self.rect_color = pygame.Color(*color)
+
     def render(self, screen):
         for i in range(self.width):
             for g in range(self.height):
-                pygame.draw.rect(screen, 'white',
+                pygame.draw.rect(screen, self.rect_color,
                                  (i * self.cell_size + self.left,
                                   g * self.cell_size + self.top,
                                   self.cell_size,
