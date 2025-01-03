@@ -89,30 +89,39 @@ def load_image(name, colorkey=None):
     return loading_image
 
 
-class AbstractSpriteClass(pygame.sprite.Sprite):
-    def __init__(self, group, x, y):
-        # НЕОБХОДИМО вызвать конструктор родительского класса Sprite.
-        # Это очень важно !!!
-        super().__init__(group)
-        self.image = load_image("not_founded.png")
-        self.image = self.image
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-    def update(self, x, y, need_update_picture=False, update_picture='car2.png', rotation=0, flip_x=False,
-               flip_y=False):
-        if need_update_picture:
-            self.image = load_image(update_picture)
-        if flip_x or flip_y:
-            self.image = pygame.transform.flip(self.image, flip_x, flip_y)
-        if rotation:
-            self.image = pygame.transform.rotate(self.image, rotation)
-        self.rect.x, self.rect.y = x, y
-
-
 class SpritePictures:
     def __init__(self, *args, **kwargs):
         self.puctures = {}
         for i in kwargs:
             self.puctures[i] = load_image(kwargs[i])
+
+    def __getitem__(self, item: int | str):
+        if isinstance(item, str):
+            return self.puctures[item]
+        return self.puctures[list(self.puctures)[item]]
+
+
+class AbstractSpriteClass(pygame.sprite.Sprite):
+    def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures):
+        super().__init__(group)
+        self.pictures = pictures
+        self.image = self.pictures[0]
+        self.image = self.image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update_rect(self, x, y):
+        self.rect.x, self.rect.y = x, y
+
+    def update_picture(self, update_picture_name: str):
+        self.image = self.pictures[update_picture_name]
+
+    def rotate(self, rotation=0):
+        self.image = pygame.transform.rotate(self.image, rotation)
+
+    def flip(self, flip_horizontal=False, flip_vertical=False):
+        self.image = pygame.transform.flip(self.image, flip_horizontal, flip_vertical)
+
+    def scale(self, x, y):
+        self.image = pygame.transform.scale(self.image, (x, y))

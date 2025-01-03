@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from p_classes import Board, load_image
+from p_classes import Board, AbstractSpriteClass, SpritePictures
 
 
 def game_sobstvenno(*args, **kwargs):
@@ -12,8 +12,10 @@ def game_sobstvenno(*args, **kwargs):
     running = True
     screen.fill('black')
     all_sprites = pygame.sprite.Group()
+    hh = AbstractSpriteClass(all_sprites, 1, 1, SpritePictures(p='valentine_heart.png'))
+    hh.scale(18, 18)
     all_sprites.draw(screen)
-    healph_bar = Board(6, 1, 0, 0, 20)
+    healph_bar = Board(6, 1, 0, 0, 21)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
