@@ -109,3 +109,10 @@ class AbstractSpriteClass(pygame.sprite.Sprite):
         if rotation:
             self.image = pygame.transform.rotate(self.image, rotation)
         self.rect.x, self.rect.y = x, y
+
+
+class SpritePictures:
+    def __init__(self, *args, **kwargs):
+        self.puctures = {}
+        for i in kwargs:
+            self.puctures[i] = load_image(kwargs[i])

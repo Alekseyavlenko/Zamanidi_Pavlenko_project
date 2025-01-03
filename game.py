@@ -13,7 +13,7 @@ def game_sobstvenno(*args, **kwargs):
     screen.fill('black')
     all_sprites = pygame.sprite.Group()
     all_sprites.draw(screen)
-    healph_bar = Board(6, 1, 0, 0, 10)
+    healph_bar = Board(6, 1, 0, 0, 20)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
