@@ -10,6 +10,7 @@ class Board:
         self.left = left
         self.top = top
         self.cell_size = cell_size
+        self.board = [[pygame.Color(0, 0, 0, 0)] * width for _ in range(height)]
         self.rect_color = pygame.Color('white')
 
     def set_view(self, left, top, cell_size):
@@ -17,7 +18,19 @@ class Board:
         self.top = top
         self.cell_size = cell_size
 
-    def change_rect_color(self, color: str | tuple, hsva=False, string=False):
+    def change_all_rect_color(self, color: str | tuple, hsva=False, string=False):
+        if hsva:
+            color_o = pygame.Color(0, 0, 0)
+            color_o.hsva = color
+            self.board = [[color_o] * self.width for _ in range(self.height)]
+        elif string:
+            color = pygame.Color(color)
+            self.board = [[color] * self.width for _ in range(self.height)]
+        else:
+            color = pygame.Color(*color)
+            self.board = [[color] * self.width for _ in range(self.height)]
+
+    def change_frame_color(self, color: str | tuple, hsva=False, string=False):
         if hsva:
             self.rect_color.hsva = color
         elif string:
@@ -28,6 +41,11 @@ class Board:
     def render(self, screen):
         for i in range(self.width):
             for g in range(self.height):
+                pygame.draw.rect(screen, self.board[g][i],
+                                 (i * self.cell_size + self.left,
+                                  g * self.cell_size + self.top,
+                                  self.cell_size,
+                                  self.cell_size), 0)
                 pygame.draw.rect(screen, self.rect_color,
                                  (i * self.cell_size + self.left,
                                   g * self.cell_size + self.top,
