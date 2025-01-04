@@ -142,7 +142,7 @@ class NormalSprite(AbstractSpriteClass):
         self.image = pygame.transform.scale(self.image, (x, y))
 
 
-class InterfaceOperand():
+class InterfaceOperand:
     def __init__(self):
         pass
 
@@ -161,14 +161,27 @@ class HealphBar:
             self.health[i].update_rect((i * cell_size) + 1, 1)
         del health
 
-    def __isub__(self, other):
+    def __isub__(self, other: int):
         self.zdravie -= 1
         if self.zdravie < len(self.health):
             self.health[self.zdravie].update_picture(1)
+            self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3, self.healph_bar_board.cell_size - 3)
         else:
             self.zdravie = 5
             self.health[self.zdravie].update_picture(1)
-        self.dead_cheking()
+            self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3, self.healph_bar_board.cell_size - 3)
+        return self
 
-    def dead_cheking(self):
-        pass
+    def __iadd__(self, other: int):
+        if self.zdravie > len(self.health):
+            self.zdravie += 1
+        if self.zdravie < len(self.health):
+            self.health[self.zdravie].update_picture(0)
+            self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3,
+                                            self.healph_bar_board.cell_size - 3)
+        return self
+
+    def is_dead_or_alive(self):
+        if self.zdravie <= 0:
+            return False
+        return True

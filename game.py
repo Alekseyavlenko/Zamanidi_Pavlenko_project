@@ -12,14 +12,7 @@ def game_sobstvenno(*args, **kwargs):
     running = True
     screen.fill('black')
     all_sprites = pygame.sprite.Group()
-    # health = NormalSprite(all_sprites, -100, -100, SpritePictures(n1='valentine_heart.png',n2='valentine_broken_heart.png'), (18, 18))
-    # health = [health.clone() for i in range(6)]
-    # for i in range(len(health)):
-    # health[i].update_rect((i * 21) + 1, 1)
     health = HealphBar(all_sprites, 6, 21)
-
-    # health[i].scale(18, 18) for i in range(len(health))
-    # health = [health[i].update_rect((i * 21) + 1, 1) for i in range(len(health))]
     all_sprites.draw(screen)
     while running:
         for event in pygame.event.get():
