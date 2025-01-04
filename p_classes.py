@@ -150,7 +150,6 @@ class InterfaceOperand:
 class HealphBar:
     def __init__(self, group, points: int, cell_size: int):
         self.healph_bar_board = Board(points, 1, 0, 0, cell_size)
-        self.healph_bar_board.change_all_rect_color((0, 0, 0, 0))
         health = NormalSprite(group,
                               -100, -100,
                               SpritePictures(n1='valentine_heart.png',
@@ -185,3 +184,14 @@ class HealphBar:
         if self.zdravie <= 0:
             return False
         return True
+
+
+class Ground:
+    def __init__(self, screen, x, y, cell_size):
+        self.screen = screen
+        self.board = Board(x, y, 0, 0, cell_size)
+        self.sprites = pygame.sprite.Group()
+
+    def render(self):
+        self.board.render(self.screen)
+        self.sprites.draw(self.screen)

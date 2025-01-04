@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from p_classes import Board, SpritePictures, NormalSprite, HealphBar
+from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground
 
 
 def game_sobstvenno(*args, **kwargs):
@@ -13,13 +13,14 @@ def game_sobstvenno(*args, **kwargs):
     screen.fill('black')
     all_sprites = pygame.sprite.Group()
     health = HealphBar(all_sprites, 6, 21)
+    ground = Ground(screen, 500, 500, 50)
     all_sprites.draw(screen)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
         screen.fill('black')
-        # healph_bar.render(screen)
+        ground.render()
         all_sprites.draw(screen)
         pygame.display.flip()
         # pygame.time.Clock().tick(200)
