@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from p_classes import Board, AbstractSpriteClass, SpritePictures
+from p_classes import Board, SpritePictures, NormalSprite, HealphBar
 
 
 def game_sobstvenno(*args, **kwargs):
@@ -12,17 +12,21 @@ def game_sobstvenno(*args, **kwargs):
     running = True
     screen.fill('black')
     all_sprites = pygame.sprite.Group()
-    hh = AbstractSpriteClass(all_sprites, 1, 1,
-                             SpritePictures(N1='valentine_heart.png', N2='valentine_broken_heart.png'))
-    hh.scale(18, 18)
+    # health = NormalSprite(all_sprites, -100, -100, SpritePictures(n1='valentine_heart.png',n2='valentine_broken_heart.png'), (18, 18))
+    # health = [health.clone() for i in range(6)]
+    # for i in range(len(health)):
+    # health[i].update_rect((i * 21) + 1, 1)
+    health = HealphBar(all_sprites, 6, 21)
+
+    # health[i].scale(18, 18) for i in range(len(health))
+    # health = [health[i].update_rect((i * 21) + 1, 1) for i in range(len(health))]
     all_sprites.draw(screen)
-    healph_bar = Board(6, 1, 0, 0, 21)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
         screen.fill('black')
-        healph_bar.render(screen)
+        # healph_bar.render(screen)
         all_sprites.draw(screen)
         pygame.display.flip()
         # pygame.time.Clock().tick(200)

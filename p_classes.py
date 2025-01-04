@@ -114,7 +114,7 @@ class AbstractSpriteClass(pygame.sprite.Sprite):
     def update_rect(self, x, y):
         self.rect.x, self.rect.y = x, y
 
-    def update_picture(self, update_picture_name: str):
+    def update_picture(self, update_picture_name: str | int):
         self.image = self.pictures[update_picture_name]
 
     def rotate(self, rotation=0):
@@ -125,3 +125,50 @@ class AbstractSpriteClass(pygame.sprite.Sprite):
 
     def scale(self, x, y):
         self.image = pygame.transform.scale(self.image, (x, y))
+
+
+class NormalSprite(AbstractSpriteClass):
+    def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures, scaling: (int, int)):
+        super().__init__(group, x, y, pictures)
+        self.group = group
+        self.scaling = scaling
+        self.scale(scaling[0], scaling[1])
+
+    def clone(self):
+        return NormalSprite(self.group, self.rect.x, self.rect.y, self.pictures, self.scaling)
+
+    def scale(self, x, y):
+        self.scaling = (x, y)
+        self.image = pygame.transform.scale(self.image, (x, y))
+
+
+class InterfaceOperand():
+    def __init__(self):
+        pass
+
+
+class HealphBar:
+    def __init__(self, group, points: int, cell_size: int):
+        self.healph_bar_board = Board(points, 1, 0, 0, cell_size)
+        self.healph_bar_board.change_all_rect_color((0, 0, 0, 0))
+        health = NormalSprite(group,
+                              -100, -100,
+                              SpritePictures(n1='valentine_heart.png',
+                                             n2='valentine_broken_heart.png'), (cell_size - 3, cell_size - 3))
+        self.health = [health.clone() for _ in range(points)]
+        self.zdravie = 6
+        for i in range(points):
+            self.health[i].update_rect((i * cell_size) + 1, 1)
+        del health
+
+    def __isub__(self, other):
+        self.zdravie -= 1
+        if self.zdravie < len(self.health):
+            self.health[self.zdravie].update_picture(1)
+        else:
+            self.zdravie = 5
+            self.health[self.zdravie].update_picture(1)
+        self.dead_cheking()
+
+    def dead_cheking(self):
+        pass
