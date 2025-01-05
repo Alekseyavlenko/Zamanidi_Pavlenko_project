@@ -70,6 +70,7 @@ class Board:
             return None
         if mouse_pos[0] >= self.width or mouse_pos[1] >= self.height:
             return None
+        print(mouse_pos)
         return mouse_pos[0], mouse_pos[1]
 
 
@@ -195,3 +196,6 @@ class Ground:
     def render(self):
         self.board.render(self.screen)
         self.sprites.draw(self.screen)
+
+    def get_click(self, mouse_pos):
+        self.board.get_click(mouse_pos)
