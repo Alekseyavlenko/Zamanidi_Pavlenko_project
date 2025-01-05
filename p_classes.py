@@ -201,7 +201,7 @@ class Ground:
     def get_click(self, mouse_pos):
         self.board.get_click(mouse_pos)
 
-    def assign_sprite(self, pictures: SpritePictures, pos: [int, int] | (int, int), offset=(0, 0)):
+    def assign_sprite(self, pictures: SpritePictures, pos: (int, int), offset=(0, 0)):
         self.tiles[pos[0]][pos[1]] = NormalSprite(self.sprites,
                                                   (pos[0] * self.board.cell_size) + offset[0],
                                                   (pos[1] * self.board.cell_size) + offset[1],
