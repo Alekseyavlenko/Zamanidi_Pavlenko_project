@@ -70,7 +70,6 @@ class Board:
             return None
         if mouse_pos[0] >= self.width or mouse_pos[1] >= self.height:
             return None
-        print(mouse_pos)
         return mouse_pos[0], mouse_pos[1]
 
 
@@ -129,7 +128,8 @@ class AbstractSpriteClass(pygame.sprite.Sprite):
 
 
 class NormalSprite(AbstractSpriteClass):
-    def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures, scaling: (int, int)):
+    def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures,
+                 scaling: (int, int)) -> object:
         super().__init__(group, x, y, pictures)
         self.group = group
         self.scaling = scaling
@@ -188,9 +188,10 @@ class HealphBar:
 
 
 class Ground:
-    def __init__(self, screen, x, y, cell_size):
+    def __init__(self, screen, width, heigth, cell_size):
         self.screen = screen
-        self.board = Board(x, y, 0, 0, cell_size)
+        self.board = Board(width, heigth, 0, 0, cell_size)
+        self.tiles = [[None] * width for _ in range(heigth)]
         self.sprites = pygame.sprite.Group()
 
     def render(self):
@@ -199,3 +200,10 @@ class Ground:
 
     def get_click(self, mouse_pos):
         self.board.get_click(mouse_pos)
+
+    def assign_sprite(self, pictures: SpritePictures, pos: [int, int] | (int, int), offset=(0, 0)):
+        self.tiles[pos[0]][pos[1]] = NormalSprite(self.sprites,
+                                                  (pos[0] * self.board.cell_size) + offset[0],
+                                                  (pos[1] * self.board.cell_size) + offset[1],
+                                                  pictures,
+                                                  (self.board.cell_size, self.board.cell_size))
