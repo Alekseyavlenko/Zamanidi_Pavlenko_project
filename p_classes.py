@@ -129,7 +129,7 @@ class AbstractSpriteClass(pygame.sprite.Sprite):
 
 class NormalSprite(AbstractSpriteClass):
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures,
-                 scaling: (int, int)) -> object:
+                 scaling: (int, int)):
         super().__init__(group, x, y, pictures)
         self.group = group
         self.scaling = scaling
@@ -187,11 +187,18 @@ class HealphBar:
         return True
 
 
+class GroundObject:
+    def __init__(self, ground, sprite: NormalSprite):
+        self.ground = ground
+        self.sprite = NormalSprite
+
+
 class Ground:
     def __init__(self, screen, width, heigth, cell_size):
         self.screen = screen
         self.board = Board(width, heigth, 0, 0, cell_size)
         self.tiles = [[None] * width for _ in range(heigth)]
+        self.objects = [[None] * width for _ in range(heigth)]
         self.sprites = pygame.sprite.Group()
 
     def render(self):
@@ -199,7 +206,12 @@ class Ground:
         self.sprites.draw(self.screen)
 
     def get_click(self, mouse_pos):
-        self.board.get_click(mouse_pos)
+        mouse_position = self.board.get_click(mouse_pos)
+        object_in_position = self.objects[mouse_position[0][1]]
+        return mouse_position, object_in_position
+
+    def add_object(self, objject: GroundObject, pos: (int, int)):
+        self.objects[pos[0]][pos[1]] = objject
 
     def assign_sprite(self, pictures: SpritePictures, pos: (int, int), offset=(0, 0)):
         self.tiles[pos[0]][pos[1]] = NormalSprite(self.sprites,
