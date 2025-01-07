@@ -187,12 +187,6 @@ class HealphBar:
         return True
 
 
-class GroundObject:
-    def __init__(self, ground, sprite: NormalSprite):
-        self.ground = ground
-        self.sprite = NormalSprite
-
-
 class Ground:
     def __init__(self, screen, width, heigth, cell_size):
         self.screen = screen
@@ -200,17 +194,20 @@ class Ground:
         self.tiles = [[None] * width for _ in range(heigth)]
         self.objects = [[None] * width for _ in range(heigth)]
         self.sprites = pygame.sprite.Group()
+        self.objects_sprites = pygame.sprite.Group()
 
     def render(self):
         self.board.render(self.screen)
         self.sprites.draw(self.screen)
+        self.objects_sprites.draw(self.screen)
 
     def get_click(self, mouse_pos):
         mouse_position = self.board.get_click(mouse_pos)
-        object_in_position = self.objects[mouse_position[0][1]]
+        object_in_position = self.objects[mouse_position[0]][mouse_position[1]]
+        print(mouse_position, object_in_position)
         return mouse_position, object_in_position
 
-    def add_object(self, objject: GroundObject, pos: (int, int)):
+    def add_object(self, objject: NormalSprite | None, pos: (int, int)):
         self.objects[pos[0]][pos[1]] = objject
 
     def assign_sprite(self, pictures: SpritePictures, pos: (int, int), offset=(0, 0)):
@@ -219,3 +216,11 @@ class Ground:
                                                   (pos[1] * self.board.cell_size) + offset[1],
                                                   pictures,
                                                   (self.board.cell_size, self.board.cell_size))
+
+    def move_object(self, pos_start: (int, int), pos_end: (int, int)):
+        if self.objects[pos_start[0]][pos_start[1]]:
+            if not self.objects[pos_end[0]][pos_end[1]]:
+                self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
+                                                                     pos_end[1] * self.board.cell_size)
+                self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
+                    self.objects[pos_start[0]][pos_start[1]]

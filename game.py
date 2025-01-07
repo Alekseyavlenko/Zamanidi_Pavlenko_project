@@ -15,12 +15,16 @@ def game_sobstvenno(*args, **kwargs):
     all_sprites = pygame.sprite.Group()
     health = HealphBar(all_sprites, 6, 21)
     ground = Ground(screen, 500, 500, 50)
+    ground.add_object(NormalSprite(ground.objects_sprites, ground.board.cell_size * 5, ground.board.cell_size * 5,
+                                   SpritePictures(n='not_founded.png'),
+                                   (ground.board.cell_size, ground.board.cell_size)), (5, 5))
+    ground.move_object((5, 5), (9, 8))
     for i in range(11):
         for g in range(11):
             ground.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg',
-                                                          'IMG_20230729_182933.jpg',
-                                                          'IMG_20230427_132003.jpg',
-                                                          '20190901_152050.png'])), (i, g))
+                                                           'IMG_20230729_182933.jpg',
+                                                           'IMG_20230427_132003.jpg',
+                                                           '20190901_152050.png'])), (i, g))
     all_sprites.draw(screen)
     while running:
         for event in pygame.event.get():
