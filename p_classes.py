@@ -143,6 +143,11 @@ class NormalSprite(AbstractSpriteClass):
         self.image = pygame.transform.scale(self.image, (x, y))
 
 
+class PlayerSprite(NormalSprite):
+    # def __init__(self):
+    pass
+
+
 class InterfaceOperand:
     def __init__(self):
         pass
