@@ -1,3 +1,5 @@
+from typing import Tuple, Any
+
 import pygame
 import os
 import sys
@@ -93,7 +95,10 @@ class SpritePictures:
     def __init__(self, *args, **kwargs):
         self.puctures = {}
         for i in kwargs:
-            self.puctures[i] = load_image(kwargs[i])
+            if isinstance(kwargs[i], str):
+                self.puctures[i] = load_image(kwargs[i])
+            else:
+                self.puctures[i] = load_image(kwargs[i][0], kwargs[i][1])
 
     def __getitem__(self, item: int | str):
         if isinstance(item, str):
@@ -128,6 +133,7 @@ class AbstractSpriteClass(pygame.sprite.Sprite):
 
 
 class NormalSprite(AbstractSpriteClass):
+
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures,
                  scaling: (int, int)):
         super().__init__(group, x, y, pictures)
@@ -142,10 +148,25 @@ class NormalSprite(AbstractSpriteClass):
         self.scaling = (x, y)
         self.image = pygame.transform.scale(self.image, (x, y))
 
+    def update_picture(self, update_picture_name: str | int):
+        self.image = self.pictures[update_picture_name]
+        self.image = pygame.transform.scale(self.image, self.scaling)
+
 
 class PlayerSprite(NormalSprite):
-    # def __init__(self):
-    pass
+    def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
+        super().__init__(group, x, y, SpritePictures(passive0=('Doge_Passive_0.png', 'white'),
+                                                     passive1=('Doge_Passive_1.png', 'white')), scaling)
+        self.passive_cicl = 0
+
+    def passive_cicle(self):
+        print(self.image, self.pictures['passive0'])
+        if not self.passive_cicl:
+            self.passive_cicl = 1
+            self.update_picture('passive1')
+        elif self.passive_cicl:
+            self.passive_cicl = 0
+            self.update_picture('passive0')
 
 
 class InterfaceOperand:
@@ -200,10 +221,20 @@ class Ground:
         self.objects = [[None] * width for _ in range(heigth)]
         self.sprites = pygame.sprite.Group()
         self.objects_sprites = pygame.sprite.Group()
+        self.player_pos = None
+
+    def deep_init(self, player_pos: (int, int)):
+        self.player_pos = player_pos
+        self.add_object(PlayerSprite(self.objects_sprites, self.board.cell_size * player_pos[0],
+                                     self.board.cell_size * player_pos[1],
+                                     (self.board.cell_size, self.board.cell_size)),
+                        (player_pos[0], player_pos[1]))
+        print((len(self.board.board[0]) // 2, len(self.board.board) // 2))
 
     def render(self):
         self.board.render(self.screen)
         self.sprites.draw(self.screen)
+        self.objects[self.player_pos[0]][self.player_pos[1]].passive_cicle()
         self.objects_sprites.draw(self.screen)
 
     def get_click(self, mouse_pos):
@@ -222,8 +253,16 @@ class Ground:
                                                   pictures,
                                                   (self.board.cell_size, self.board.cell_size))
 
-    def move_object(self, pos_start: (int, int), pos_end: (int, int)):
-        if self.objects[pos_start[0]][pos_start[1]]:
+    def move_object(self, pos_start: (int, int), pos_end: (int, int), tipe=None):
+        if not tipe:
+            if self.objects[pos_start[0]][pos_start[1]]:
+                if not self.objects[pos_end[0]][pos_end[1]]:
+                    self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
+                                                                         pos_end[1] * self.board.cell_size)
+                    self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
+                        self.objects[pos_start[0]][pos_start[1]]
+        if isinstance(tipe, PlayerSprite):
+            self.player_pos = pos_end
             if not self.objects[pos_end[0]][pos_end[1]]:
                 self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                      pos_end[1] * self.board.cell_size)
