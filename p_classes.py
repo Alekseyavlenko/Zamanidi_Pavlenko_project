@@ -155,18 +155,27 @@ class NormalSprite(AbstractSpriteClass):
 
 class PlayerSprite(NormalSprite):
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
-        super().__init__(group, x, y, SpritePictures(passive0=('Doge_Passive_0.png', 'white'),
-                                                     passive1=('Doge_Passive_1.png', 'white')), scaling)
-        self.passive_cicl = 0
+        super().__init__(group, x, y, SpritePictures(p0=('Doge_Passive_0.png', 'white'),
+                                                     p1=('Doge_Passive_1.png', 'white'),
+                                                     p2=('Doge_Passive_0.png', 'white'),
+                                                     p3=('Doge_Passive_1.png', 'white')),
+                         scaling)
+        self.cicl = 0
 
-    def passive_cicle(self):
-        print(self.image, self.pictures['passive0'])
-        if not self.passive_cicl:
-            self.passive_cicl = 1
-            self.update_picture('passive1')
-        elif self.passive_cicl:
-            self.passive_cicl = 0
-            self.update_picture('passive0')
+    def cicle_animation(self):
+        if not self.cicl:
+            self.cicl = 1
+            self.update_picture('p1')
+        elif self.cicl == 1:
+            self.cicl = 2
+            self.update_picture('p2')
+        elif self.cicl == 2:
+            self.cicl = 3
+            self.update_picture('p3')
+        elif self.cicl == 3:
+            self.cicl = 0
+            self.update_picture('p0')
+
 
 
 class InterfaceOperand:
@@ -234,7 +243,7 @@ class Ground:
     def render(self):
         self.board.render(self.screen)
         self.sprites.draw(self.screen)
-        self.objects[self.player_pos[0]][self.player_pos[1]].passive_cicle()
+        self.objects[self.player_pos[0]][self.player_pos[1]].cicle_animation()
         self.objects_sprites.draw(self.screen)
 
     def get_click(self, mouse_pos):

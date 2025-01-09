@@ -20,7 +20,6 @@ def game_sobstvenno(*args, **kwargs):
         for g in range(11):
             ground.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg',
                                                            '20190901_152050.png'])), (i, g))
-    ground.move_object((5, 5), (10, 10), ground.objects[5][5])
     all_sprites.draw(screen)
     while running:
         for event in pygame.event.get():
