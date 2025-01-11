@@ -176,6 +176,17 @@ class PlayerSprite(NormalSprite):
             self.cicl = 0
             self.update_picture('p0')
 
+    def change_animation(self, passive=False, run=False):
+        if passive:
+            self.pictures = SpritePictures(p0=('Doge_Passive_0.png', 'white'),
+                                           p1=('Doge_Passive_1.png', 'white'),
+                                           p2=('Doge_Passive_0.png', 'white'),
+                                           p3=('Doge_Passive_1.png', 'white'))
+        if run:
+            self.pictures = SpritePictures(p0=('Doge_Walk_1.png', 'white'),
+                                           p1=('Doge_Walk_0.png', 'white'),
+                                           p2=('Doge_Walk_1.png', 'white'),
+                                           p3=('Doge_Walk_0.png', 'white'))
 
 
 class InterfaceOperand:

@@ -16,6 +16,7 @@ def game_sobstvenno(*args, **kwargs):
     health = HealphBar(all_sprites, 6, 21)
     ground = Ground(screen, 500, 500, 50)
     ground.deep_init((5, 5))
+    # ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True)
     for i in range(11):
         for g in range(11):
             ground.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg',
