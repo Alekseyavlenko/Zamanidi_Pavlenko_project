@@ -16,7 +16,6 @@ def game_sobstvenno(*args, **kwargs):
     health = HealphBar(all_sprites, 6, 21)
     ground = Ground(screen, 500, 500, 50)
     ground.deep_init((5, 5))
-    # ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True)
     for i in range(11):
         for g in range(11):
             ground.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg',
@@ -28,6 +27,33 @@ def game_sobstvenno(*args, **kwargs):
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 ground.get_click(event.pos)
+            if True in pygame.key.get_pressed():
+                if pygame.key.get_pressed().index(True) == 79:
+                    ground.move_object((ground.player_pos[0], ground.player_pos[1]),
+                                       (ground.player_pos[0] + 1, ground.player_pos[1]),
+                                       tipe=ground.objects[ground.player_pos[0]][ground.player_pos[1]])
+                    ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True)
+                if pygame.key.get_pressed().index(True) == 80:
+                    ground.move_object((ground.player_pos[0], ground.player_pos[1]),
+                                       (ground.player_pos[0] - 1, ground.player_pos[1]),
+                                       tipe=ground.objects[ground.player_pos[0]][ground.player_pos[1]])
+                    ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True)
+                if pygame.key.get_pressed().index(True) == 82:
+                    ground.move_object((ground.player_pos[0], ground.player_pos[1]),
+                                       (ground.player_pos[0], ground.player_pos[1] - 1),
+                                       tipe=ground.objects[ground.player_pos[0]][ground.player_pos[1]])
+                    ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True)
+                if pygame.key.get_pressed().index(True) == 81:
+                    ground.move_object((ground.player_pos[0], ground.player_pos[1]),
+                                       (ground.player_pos[0], ground.player_pos[1] + 1),
+                                       tipe=ground.objects[ground.player_pos[0]][ground.player_pos[1]])
+                    ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True)
+                if (ground.player_pos[0] < 0 or ground.player_pos[0] > len(
+                        ground.board.board[0])) // ground.board.cell_size or (
+                        ground.player_pos[1] < 0 or ground.player_pos[1] >
+                        len(ground.board.board) // ground.board.cell_size):
+                    print('собакен выпал из мира')
+                    running = False
         screen.fill('black')
         ground.render()
         all_sprites.draw(screen)

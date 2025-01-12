@@ -1,5 +1,3 @@
-from typing import Tuple, Any
-
 import pygame
 import os
 import sys
