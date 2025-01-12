@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+from random import choice
 
 
 class Board:
@@ -247,7 +248,10 @@ class Ground:
                                      self.board.cell_size * player_pos[1],
                                      (self.board.cell_size, self.board.cell_size)),
                         (player_pos[0], player_pos[1]))
-        print((len(self.board.board[0]) // 2, len(self.board.board) // 2))
+        for i in range(len(self.tiles[0]) // self.board.cell_size + 1):
+            for g in range(len(self.tiles) // self.board.cell_size + 1):
+                self.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg',
+                                                             '20190901_152050.png'])), (i, g))
 
     def render(self):
         self.board.render(self.screen)
@@ -282,7 +286,21 @@ class Ground:
         if isinstance(tipe, PlayerSprite):
             self.player_pos = pos_end
             if not self.objects[pos_end[0]][pos_end[1]]:
-                self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
-                                                                     pos_end[1] * self.board.cell_size)
-                self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
-                    self.objects[pos_start[0]][pos_start[1]]
+                if not self.objects[pos_end[0]][pos_end[1]]:
+                    self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
+                                                                         pos_end[1] * self.board.cell_size)
+                    self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
+                        self.objects[pos_start[0]][pos_start[1]]
+                if self.player_pos[0] < 0:
+                    self.objects[self.player_pos[0]][self.player_pos[1]] = None
+                    self.deep_init((len(self.board.board[0]) // self.board.cell_size, self.player_pos[1]))
+                if self.player_pos[0] > len(self.board.board[0]) // self.board.cell_size:
+                    self.objects[self.player_pos[0]][self.player_pos[1]] = None
+                    self.deep_init((0, self.player_pos[1]))
+                if self.player_pos[1] < 0:
+                    self.objects[self.player_pos[0]][self.player_pos[1]] = None
+                    self.deep_init((self.player_pos[0], len(self.board.board[1]) // self.board.cell_size))
+                if self.player_pos[1] > len(self.board.board[1]) // self.board.cell_size:
+                    self.objects[self.player_pos[0]][self.player_pos[1]] = None
+                    self.deep_init((self.player_pos[0], 0))
+                print(self.player_pos)

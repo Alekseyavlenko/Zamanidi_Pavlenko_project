@@ -16,10 +16,6 @@ def game_sobstvenno(*args, **kwargs):
     health = HealphBar(all_sprites, 6, 21)
     ground = Ground(screen, 500, 500, 50)
     ground.deep_init((5, 5))
-    for i in range(11):
-        for g in range(11):
-            ground.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg',
-                                                           '20190901_152050.png'])), (i, g))
     all_sprites.draw(screen)
     while running:
         for event in pygame.event.get():
@@ -53,7 +49,7 @@ def game_sobstvenno(*args, **kwargs):
                         ground.player_pos[1] < 0 or ground.player_pos[1] >
                         len(ground.board.board) // ground.board.cell_size):
                     print('собакен выпал из мира')
-                    running = False
+                    # running = False
         screen.fill('black')
         ground.render()
         all_sprites.draw(screen)
