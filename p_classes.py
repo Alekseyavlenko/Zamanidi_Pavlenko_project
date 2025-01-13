@@ -188,11 +188,6 @@ class PlayerSprite(NormalSprite):
                                            p3=('Doge_Walk_0.png', 'white'))
 
 
-class InterfaceOperand:
-    def __init__(self):
-        pass
-
-
 class HealphBar:
     def __init__(self, group, points: int, cell_size: int):
         self.healph_bar_board = Board(points, 1, 0, 0, cell_size)

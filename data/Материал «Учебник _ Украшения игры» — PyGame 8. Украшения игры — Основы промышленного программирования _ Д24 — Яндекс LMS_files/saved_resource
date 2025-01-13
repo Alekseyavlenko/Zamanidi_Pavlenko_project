@@ -1,0 +1,1 @@
+/**/ typeof yaBrowserUpdaterJSONPCallback === 'function' && yaBrowserUpdaterJSONPCallback({"needUpdate":false,"browser":"yabrowser","version":"24.12","browserName":"YandexBrowser","browserBase":"Chromium"});

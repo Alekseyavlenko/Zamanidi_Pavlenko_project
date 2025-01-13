@@ -17,6 +17,9 @@ def game_sobstvenno(*args, **kwargs):
     ground = Ground(screen, 500, 500, 50)
     ground.deep_init((5, 5))
     all_sprites.draw(screen)
+    pygame.mixer.music.load('data/James Primate — Threat - Garbage Wastes.mp3')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.5)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -24,6 +27,7 @@ def game_sobstvenno(*args, **kwargs):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 ground.get_click(event.pos)
             if True in pygame.key.get_pressed():
+                print(pygame.key.get_pressed().index(True))
                 if pygame.key.get_pressed().index(True) == 79:
                     ground.move_object((ground.player_pos[0], ground.player_pos[1]),
                                        (ground.player_pos[0] + 1, ground.player_pos[1]),
@@ -54,7 +58,7 @@ def game_sobstvenno(*args, **kwargs):
         ground.render()
         all_sprites.draw(screen)
         pygame.display.flip()
-        # pygame.time.Clock().tick(200)
+        pygame.time.Clock().tick(200)
 
 
 # def main():
