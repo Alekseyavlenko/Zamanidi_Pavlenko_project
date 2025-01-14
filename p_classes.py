@@ -188,6 +188,30 @@ class PlayerSprite(NormalSprite):
                                            p3=('Doge_Walk_0.png', 'white'))
 
 
+class BulletMonsterSprite(NormalSprite):
+    def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
+        super().__init__(group, x, y, SpritePictures(p0=('BulletMonster_Normal_0.png', 'white'),
+                                                     p1=('BulletMonster_Normal_1.png', 'white'),
+                                                     p2=('BulletMonster_Normal_2.png', 'white'),
+                                                     p3=('BulletMonster_Normal_3.png', 'white')),
+                         scaling)
+        self.cicl = 0
+
+    def cicle_animation(self):
+        if not self.cicl:
+            self.cicl = 1
+            self.update_picture('p1')
+        elif self.cicl == 1:
+            self.cicl = 2
+            self.update_picture('p2')
+        elif self.cicl == 2:
+            self.cicl = 3
+            self.update_picture('p3')
+        elif self.cicl == 3:
+            self.cicl = 0
+            self.update_picture('p0')
+
+
 class BulletSprite(NormalSprite):
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
         super().__init__(group, x, y, SpritePictures(p0=('Bullet_Sprite_0.png', 'white'),
