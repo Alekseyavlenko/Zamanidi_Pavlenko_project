@@ -331,8 +331,19 @@ class Turns:
     def __init__(self):
         self.turn = False
 
+    def deep_init(self, *args: (int, int)):
+        self.bodies = []
+        for i in args:
+            self.bodies.append(i)
+
+    def add_object(self, pos: (int, int)):
+        self.bodies.append(pos)
+
     def __bool__(self):
         return self.turn
 
     def re_turn(self):
         self.turn = True if not self.turn else False
+
+    def __getitem__(self, item):
+        return self.bodies[item]
