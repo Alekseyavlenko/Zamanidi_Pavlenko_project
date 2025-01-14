@@ -2,7 +2,7 @@ import pygame
 import os
 import sys
 from random import choice
-from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite
+from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, Turns
 
 
 def game_sobstvenno(*args, **kwargs):
@@ -16,10 +16,13 @@ def game_sobstvenno(*args, **kwargs):
     health = HealphBar(all_sprites, 6, 21)
     ground = Ground(screen, 500, 500, 50)
     ground.deep_init((5, 5))
+    ground.add_object(BulletSprite(ground.objects_sprites, ground.board.cell_size * 4, ground.board.cell_size * 4,
+                                   (ground.board.cell_size, ground.board.cell_size)), (4, 4))
     all_sprites.draw(screen)
     pygame.mixer.music.load('data/James Primate — Threat - Garbage Wastes.mp3')
     pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.set_volume(0.0)
+    turn = Turns()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -56,6 +59,7 @@ def game_sobstvenno(*args, **kwargs):
                     # running = False
         screen.fill('black')
         ground.render()
+        ground.objects[4][4].cicle_animation()
         all_sprites.draw(screen)
         pygame.display.flip()
         pygame.time.Clock().tick(200)
