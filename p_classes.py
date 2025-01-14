@@ -188,6 +188,30 @@ class PlayerSprite(NormalSprite):
                                            p3=('Doge_Walk_0.png', 'white'))
 
 
+class BulletSprite(NormalSprite):
+    def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
+        super().__init__(group, x, y, SpritePictures(p0=('Bullet_Sprite_0.png', 'white'),
+                                                     p1=('Bullet_Sprite_1.png', 'white'),
+                                                     p2=('Bullet_Sprite_2.png', 'white'),
+                                                     p3=('Bullet_Sprite_3.png', 'white')),
+                         scaling)
+        self.cicl = 0
+
+    def cicle_animation(self):
+        if not self.cicl:
+            self.cicl = 1
+            self.update_picture('p1')
+        elif self.cicl == 1:
+            self.cicl = 2
+            self.update_picture('p2')
+        elif self.cicl == 2:
+            self.cicl = 3
+            self.update_picture('p3')
+        elif self.cicl == 3:
+            self.cicl = 0
+            self.update_picture('p0')
+
+
 class HealphBar:
     def __init__(self, group, points: int, cell_size: int):
         self.healph_bar_board = Board(points, 1, 0, 0, cell_size)
@@ -205,11 +229,13 @@ class HealphBar:
         self.zdravie -= 1
         if self.zdravie < len(self.health):
             self.health[self.zdravie].update_picture(1)
-            self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3, self.healph_bar_board.cell_size - 3)
+            self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3,
+                                            self.healph_bar_board.cell_size - 3)
         else:
             self.zdravie = 5
             self.health[self.zdravie].update_picture(1)
-            self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3, self.healph_bar_board.cell_size - 3)
+            self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3,
+                                            self.healph_bar_board.cell_size - 3)
         return self
 
     def __iadd__(self, other: int):
@@ -299,3 +325,14 @@ class Ground:
                     self.objects[self.player_pos[0]][self.player_pos[1]] = None
                     self.deep_init((self.player_pos[0], 0))
                 print(self.player_pos)
+
+
+class Turns:
+    def __init__(self):
+        self.turn = False
+
+    def __bool__(self):
+        return self.turn
+
+    def re_turn(self):
+        self.turn = True if not self.turn else False
