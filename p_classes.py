@@ -365,19 +365,22 @@ class Turns:
     def __init__(self):
         self.turn = False
 
-    def deep_init(self, *args: (int, int)):
+    def deep_init(self, ground, *args: (int, int)):
         self.bodies = []
         for i in args:
-            self.bodies.append(i)
+            self.bodies.append([ground.objects[i[0]][i[1]], i])
 
-    def add_object(self, pos: (int, int)):
-        self.bodies.append(pos)
+    def add_object(self, ground, pos: (int, int)):
+        self.bodies.append([ground.objects[pos[0]][pos[1]], pos])
 
     def __bool__(self):
         return self.turn
 
     def re_turn(self):
         self.turn = True if not self.turn else False
+
+    def intellectual_move(self):
+        pass
 
     def __getitem__(self, item):
         return self.bodies[item]
