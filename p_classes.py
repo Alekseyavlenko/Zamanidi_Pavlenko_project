@@ -104,6 +104,16 @@ class SpritePictures:
             return self.puctures[item]
         return self.puctures[list(self.puctures)[item]]
 
+    def __reversed__(self, reverse=0):
+        if reverse:
+            for i in self.puctures:
+                if reverse == 1:
+                    self.puctures[i] = pygame.transform.flip(self.puctures[i], 1, 0)
+                elif reverse == 2:
+                    self.puctures[i] = pygame.transform.flip(self.puctures[i], 0, 1)
+                elif reverse == 3:
+                    self.puctures[i] = pygame.transform.flip(self.puctures[i], 1, 1)
+
 
 class AbstractSpriteClass(pygame.sprite.Sprite):
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures):
@@ -175,17 +185,18 @@ class PlayerSprite(NormalSprite):
             self.cicl = 0
             self.update_picture('p0')
 
-    def change_animation(self, passive=False, run=False):
+    def change_animation(self, passive=False, run=False, reverse=0):
         if passive:
             self.pictures = SpritePictures(p0=('Doge_Passive_0.png', 'white'),
                                            p1=('Doge_Passive_1.png', 'white'),
                                            p2=('Doge_Passive_0.png', 'white'),
                                            p3=('Doge_Passive_1.png', 'white'))
-        if run:
+        elif run:
             self.pictures = SpritePictures(p0=('Doge_Walk_1.png', 'white'),
                                            p1=('Doge_Walk_0.png', 'white'),
                                            p2=('Doge_Walk_1.png', 'white'),
                                            p3=('Doge_Walk_0.png', 'white'))
+        self.pictures.__reversed__(reverse)
 
 
 class BulletMonsterSprite(NormalSprite):
@@ -295,8 +306,7 @@ class Ground:
                         (player_pos[0], player_pos[1]))
         for i in range(len(self.tiles[0]) // self.board.cell_size + 1):
             for g in range(len(self.tiles) // self.board.cell_size + 1):
-                self.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg',
-                                                             '20190901_152050.png'])), (i, g))
+                self.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg'])), (i, g))
 
     def render(self):
         self.board.render(self.screen)

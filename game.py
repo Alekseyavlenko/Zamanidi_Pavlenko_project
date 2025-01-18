@@ -24,7 +24,7 @@ def game_sobstvenno(*args, **kwargs):
     pygame.mixer.music.set_volume(0.0)
     turn = Turns()
     turn.deep_init()
-    turn.add_object((4, 4))
+    turn.add_object((3, 4))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -43,12 +43,13 @@ def game_sobstvenno(*args, **kwargs):
                         ground.move_object((ground.player_pos[0], ground.player_pos[1]),
                                            (ground.player_pos[0] - 1, ground.player_pos[1]),
                                            tipe=ground.objects[ground.player_pos[0]][ground.player_pos[1]])
-                        ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True)
+                        ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True,
+                                                                                                    reverse=1)
                     if pygame.key.get_pressed().index(True) == 82:
                         ground.move_object((ground.player_pos[0], ground.player_pos[1]),
                                            (ground.player_pos[0], ground.player_pos[1] - 1),
                                            tipe=ground.objects[ground.player_pos[0]][ground.player_pos[1]])
-                        ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True)
+                        ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(run=True, reverse=1)
                     if pygame.key.get_pressed().index(True) == 81:
                         ground.move_object((ground.player_pos[0], ground.player_pos[1]),
                                            (ground.player_pos[0], ground.player_pos[1] + 1),
