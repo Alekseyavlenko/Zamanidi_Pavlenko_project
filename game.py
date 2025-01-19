@@ -3,7 +3,7 @@ import os
 import sys
 from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletMonsterSprite, Turns
-from p_game_classes import dogge_move
+from p_game_classes import dogge_move, turning
 
 
 def game_sobstvenno(*args, **kwargs):
@@ -43,9 +43,7 @@ def game_sobstvenno(*args, **kwargs):
         screen.fill('black')
         ground.render()
         if not turn:
-            ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
-            turn.bodies[0] = (turn.bodies[0][0], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
-            turn.re_turn()
+            turning(ground, turn)
         for i in range(len(turn.bodies)):
             ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].cicle_animation()
         all_sprites.draw(screen)

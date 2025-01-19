@@ -32,3 +32,8 @@ def dogge_move(ground):
             ground.player_pos[1] < 0 or ground.player_pos[1] >
             len(ground.board.board) // ground.board.cell_size):
         print('собакен выпал из мира')
+
+def turning(ground, turn):
+    ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
+    turn.bodies[0] = (turn.bodies[0][0], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
+    turn.re_turn()
