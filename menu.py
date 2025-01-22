@@ -19,14 +19,14 @@ def main_menu(achievements, language):
     RED = (255, 0, 0)
 
     # Загрузка музыки
-    pygame.mixer.music.load("menu_music.mp3")
+    pygame.mixer.music.load("data/menu_music.mp3")
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1)  # музыка в цикле
 
     # Загрузка фонов
-    bg_main_menu = pygame.image.load("bg_main_menu.jpg")
-    bg_settings = pygame.image.load("bg_settings.jpg")
-    bg_achievements = pygame.image.load("bg_achievements.jpg")
+    bg_main_menu = pygame.image.load("data/bg_main_menu.jpg")
+    bg_settings = pygame.image.load("data/bg_settings.jpg")
+    bg_achievements = pygame.image.load("data/bg_achievements.jpg")
 
     # Шрифты
     font = pygame.font.Font(None, 74)
