@@ -1,5 +1,5 @@
 import sys
-
+from game import game_sobstvenno
 import pygame
 
 
@@ -182,4 +182,5 @@ if __name__ == "__main__":
     language = "ru"  # Начальный язык - русский
     action = main_menu(achievements, language)
     if action == "start":
+        game_sobstvenno()
         print("Игра запускается... (реализуйте игровой цикл)")
