@@ -271,6 +271,7 @@ class HealphBar:
             self.health[self.zdravie].update_picture(1)
             self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3,
                                             self.healph_bar_board.cell_size - 3)
+        print('Собакену дырявят ХП!')
         return self
 
     def __iadd__(self, other: int):
@@ -280,6 +281,7 @@ class HealphBar:
             self.health[self.zdravie].update_picture(0)
             self.health[self.zdravie].scale(self.healph_bar_board.cell_size - 3,
                                             self.healph_bar_board.cell_size - 3)
+        print('Собакен выздоравливается!')
         return self
 
     def is_dead_or_alive(self):
@@ -358,7 +360,7 @@ class Ground:
                 if self.player_pos[1] > len(self.board.board[1]) // self.board.cell_size:
                     self.objects[self.player_pos[0]][self.player_pos[1]] = None
                     self.deep_init((self.player_pos[0], 0))
-                print(self.player_pos)
+                # print(self.player_pos)
 
 
 class Turns:
@@ -371,7 +373,8 @@ class Turns:
             self.bodies.append([ground.objects[i[0]][i[1]], i])
 
     def add_object(self, ground, pos: (int, int)):
-        self.bodies.append([ground.objects[pos[0]][pos[1]], pos])
+        if ground.objects[pos[0]][pos[1]]:
+            self.bodies.append([ground.objects[pos[0]][pos[1]], pos])
 
     def __bool__(self):
         return self.turn

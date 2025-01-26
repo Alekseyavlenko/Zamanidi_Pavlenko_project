@@ -26,8 +26,11 @@ def game_sobstvenno(*args, **kwargs):
     ground = Ground(screen, 500, 500, 50)
     ground.deep_init((5, 5))
     ground.add_object(
-        BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 4, ground.board.cell_size * 4,
+        BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 3, ground.board.cell_size * 4,
                             (ground.board.cell_size, ground.board.cell_size)), (3, 4))
+    ground.add_object(
+        BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 6, ground.board.cell_size * 6,
+                            (ground.board.cell_size, ground.board.cell_size)), (6, 6))
     all_sprites.draw(screen)
     pygame.mixer.music.load('data/James Primate — Threat - Garbage Wastes.mp3')
     pygame.mixer.music.play(-1)
@@ -35,6 +38,7 @@ def game_sobstvenno(*args, **kwargs):
     turn = Turns()
     turn.deep_init(ground)
     turn.add_object(ground, (3, 4))
+    turn.add_object(ground, (6, 6))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -43,7 +47,7 @@ def game_sobstvenno(*args, **kwargs):
                 ground.get_click(event.pos)
             if True in pygame.key.get_pressed():
                 if turn:
-                    print(pygame.key.get_pressed().index(True))
+                    # если нужен индекс кнопки print(pygame.key.get_pressed().index(True))
                     if pygame.key.get_pressed().index(True) in [79, 80, 81, 82]:
                         dogge_move(ground)
                         turn.re_turn()
@@ -53,7 +57,7 @@ def game_sobstvenno(*args, **kwargs):
         for i in range(len(turn.bodies)):
             ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].cicle_animation()
         if not turn:
-            turning(ground, turn)
+            turning(ground, turn, health)
         all_sprites.draw(screen)
         pygame.display.flip()
         pygame.time.Clock().tick(200)

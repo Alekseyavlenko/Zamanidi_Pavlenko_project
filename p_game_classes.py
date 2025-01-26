@@ -35,7 +35,7 @@ def dogge_move(ground):
         print('собакен выпал из мира')
 
 
-def turning(ground, turn):
+def turning(ground: Ground, turn: Turns, health: HealphBar):
     player_pos = ground.player_pos
     for i in range(len(turn.bodies)):
         if isinstance(turn.bodies[i][0], BulletMonsterSprite):
@@ -48,13 +48,29 @@ def turning(ground, turn):
                 c2 = 1
             elif turn.bodies[i][1][1] + 1 == len(ground.objects):
                 c2 = -1
-            if not ground.objects[turn.bodies[i][1][0] + c1][turn.bodies[i][1][1] + c2]:
+            if not c1 and not c2:
+                if not ground.objects[turn.bodies[i][1][0] + 0][turn.bodies[i][1][1] + 1]:
+                    ground.add_object(
+                        BulletSprite(ground.objects_sprites, ground.board.cell_size * (turn.bodies[i][1][0] + 0),
+                                            ground.board.cell_size * (turn.bodies[i][1][1] + 1),
+                                            (ground.board.cell_size, ground.board.cell_size)),
+                        (turn.bodies[i][1][0] + 0, turn.bodies[i][1][1] + 1))
+                    turn.add_object(ground, (turn.bodies[i][1][0] + 0, turn.bodies[i][1][1] + 1))
+                    print('BulletMonster проталкивает часть себя ближе к клавиатуре!')
+            elif not ground.objects[turn.bodies[i][1][0] + c1][turn.bodies[i][1][1] + c2]:
                 ground.move_object(turn.bodies[i][1],
                                    (turn.bodies[i][1][0] + c1, turn.bodies[i][1][1] + c2))
                 turn.bodies[i] = (turn.bodies[i][0],
                                   (turn.bodies[i][1][0] + c1,
                                    turn.bodies[i][1][1] + c2))
-        if isinstance(turn.bodies[i][0], BulletSprite):
+            elif isinstance(ground.objects[turn.bodies[i][1][0] + c1][turn.bodies[i][1][1] + c2], PlayerSprite):
+                print('BulletMonster врезался в собакена!')
+                ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].kill()
+                ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]] = None
+                del turn.bodies[i]
+                i -= 1
+                health -= 1
+        elif isinstance(turn.bodies[i][0], BulletSprite):
             pass
     turn.re_turn()
 # ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
