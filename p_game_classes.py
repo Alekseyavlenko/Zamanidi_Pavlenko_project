@@ -2,7 +2,8 @@ import pygame
 import os
 import sys
 from random import choice
-from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletMonsterSprite, Turns
+from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
+    BulletMonsterSprite, Turns
 
 
 def dogge_move(ground):
@@ -33,7 +34,28 @@ def dogge_move(ground):
             len(ground.board.board) // ground.board.cell_size):
         print('собакен выпал из мира')
 
+
 def turning(ground, turn):
-    ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
-    turn.bodies[0] = (turn.bodies[0][0], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
+    player_pos = ground.player_pos
+    for i in range(len(turn.bodies)):
+        if isinstance(turn.bodies[i][0], BulletMonsterSprite):
+            c1, c2 = choice([-1, 0, 1]), choice([-1, 0, 1])
+            if turn.bodies[i][1][0] == 0:
+                c1 = 1
+            elif turn.bodies[i][1][0] + 1 == len(ground.objects[0]):
+                c1 = -1
+            if turn.bodies[i][1][1] == 0:
+                c2 = 1
+            elif turn.bodies[i][1][1] + 1 == len(ground.objects):
+                c2 = -1
+            if not ground.objects[turn.bodies[i][1][0] + c1][turn.bodies[i][1][1] + c2]:
+                ground.move_object(turn.bodies[i][1],
+                                   (turn.bodies[i][1][0] + c1, turn.bodies[i][1][1] + c2))
+                turn.bodies[i] = (turn.bodies[i][0],
+                                  (turn.bodies[i][1][0] + c1,
+                                   turn.bodies[i][1][1] + c2))
+        if isinstance(turn.bodies[i][0], BulletSprite):
+            pass
     turn.re_turn()
+# ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
+# turn.bodies[0] = (turn.bodies[0][0], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))

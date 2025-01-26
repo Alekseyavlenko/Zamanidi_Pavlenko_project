@@ -293,7 +293,7 @@ class Ground:
         self.screen = screen
         self.board = Board(width, heigth, 0, 0, cell_size)
         self.tiles = [[None] * width for _ in range(heigth)]
-        self.objects = [[None] * width for _ in range(heigth)]
+        self.objects = [[None] * (width // cell_size) for _ in range(heigth // cell_size)]
         self.sprites = pygame.sprite.Group()
         self.objects_sprites = pygame.sprite.Group()
         self.player_pos = None

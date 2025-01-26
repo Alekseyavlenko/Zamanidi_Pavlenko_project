@@ -1,25 +1,33 @@
+import pprint
+
 import pygame
 import os
 import sys
 from random import choice
-from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletMonsterSprite, Turns
+from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
+    BulletMonsterSprite, Turns
 from p_game_classes import dogge_move, turning
 
 
 def game_sobstvenno(*args, **kwargs):
+    # подготовка
     pygame.init()
     pygame.display.set_caption('game')
     size = 550, 550
     screen = pygame.display.set_mode(size)
     running = True
     screen.fill('black')
+
+    # спрайты интефейса
     all_sprites = pygame.sprite.Group()
-    health = HealphBar(all_sprites, 6, 21)
+    health = HealphBar(all_sprites, 6, 21)  # здоровье
+
+    # поле
     ground = Ground(screen, 500, 500, 50)
     ground.deep_init((5, 5))
     ground.add_object(
         BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 4, ground.board.cell_size * 4,
-                            (ground.board.cell_size, ground.board.cell_size)), (4, 4))
+                            (ground.board.cell_size, ground.board.cell_size)), (3, 4))
     all_sprites.draw(screen)
     pygame.mixer.music.load('data/James Primate — Threat - Garbage Wastes.mp3')
     pygame.mixer.music.play(-1)
@@ -42,10 +50,10 @@ def game_sobstvenno(*args, **kwargs):
 
         screen.fill('black')
         ground.render()
-        if not turn:
-            turning(ground, turn)
         for i in range(len(turn.bodies)):
             ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].cicle_animation()
+        if not turn:
+            turning(ground, turn)
         all_sprites.draw(screen)
         pygame.display.flip()
         pygame.time.Clock().tick(200)
