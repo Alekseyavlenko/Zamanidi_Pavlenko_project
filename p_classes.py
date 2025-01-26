@@ -294,8 +294,8 @@ class Ground:
     def __init__(self, screen, width, heigth, cell_size):
         self.screen = screen
         self.board = Board(width, heigth, 0, 0, cell_size)
-        self.tiles = [[None] * width for _ in range(heigth)]
-        self.objects = [[None] * (width // cell_size) for _ in range(heigth // cell_size)]
+        self.tiles = [[None] * ((width // cell_size) + 1) for _ in range(heigth // cell_size + 1)]
+        self.objects = [[None] * ((width // cell_size) + 1) for _ in range(heigth // cell_size + 1)]
         self.sprites = pygame.sprite.Group()
         self.objects_sprites = pygame.sprite.Group()
         self.player_pos = None
@@ -306,8 +306,8 @@ class Ground:
                                      self.board.cell_size * player_pos[1],
                                      (self.board.cell_size, self.board.cell_size)),
                         (player_pos[0], player_pos[1]))
-        for i in range(len(self.tiles[0]) // self.board.cell_size + 1):
-            for g in range(len(self.tiles) // self.board.cell_size + 1):
+        for i in range(len(self.tiles[0])):
+            for g in range(len(self.tiles)):
                 self.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg'])), (i, g))
 
     def render(self):
@@ -342,25 +342,25 @@ class Ground:
                         self.objects[pos_start[0]][pos_start[1]]
         if isinstance(tipe, PlayerSprite):
             self.player_pos = pos_end
-            if not self.objects[pos_end[0]][pos_end[1]]:
+            if self.player_pos[0] < 0:
+                self.objects[self.player_pos[0]][self.player_pos[1]] = None
+                self.deep_init((len(self.board.board[0]) // self.board.cell_size, self.player_pos[1]))
+            elif self.player_pos[0] > len(self.board.board[0]) // self.board.cell_size:
+                self.objects[self.player_pos[0]][self.player_pos[1]] = None
+                self.deep_init((0, self.player_pos[1]))
+            elif self.player_pos[1] < 0:
+                self.objects[self.player_pos[0]][self.player_pos[1]] = None
+                self.deep_init((self.player_pos[0], len(self.board.board[1]) // self.board.cell_size))
+            elif self.player_pos[1] > len(self.board.board[1]) // self.board.cell_size:
+                self.objects[self.player_pos[0]][self.player_pos[1]] = None
+                self.deep_init((self.player_pos[0], 0))
+            elif not self.objects[pos_end[0]][pos_end[1]]:
                 if not self.objects[pos_end[0]][pos_end[1]]:
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-                if self.player_pos[0] < 0:
-                    self.objects[self.player_pos[0]][self.player_pos[1]] = None
-                    self.deep_init((len(self.board.board[0]) // self.board.cell_size, self.player_pos[1]))
-                if self.player_pos[0] > len(self.board.board[0]) // self.board.cell_size:
-                    self.objects[self.player_pos[0]][self.player_pos[1]] = None
-                    self.deep_init((0, self.player_pos[1]))
-                if self.player_pos[1] < 0:
-                    self.objects[self.player_pos[0]][self.player_pos[1]] = None
-                    self.deep_init((self.player_pos[0], len(self.board.board[1]) // self.board.cell_size))
-                if self.player_pos[1] > len(self.board.board[1]) // self.board.cell_size:
-                    self.objects[self.player_pos[0]][self.player_pos[1]] = None
-                    self.deep_init((self.player_pos[0], 0))
-                # print(self.player_pos)
+                print(self.player_pos)
 
 
 class Turns:
