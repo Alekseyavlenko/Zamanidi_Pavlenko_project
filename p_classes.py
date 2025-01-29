@@ -341,12 +341,23 @@ class Ground:
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
         if isinstance(tipe, PlayerSprite):
-            self.player_pos = pos_end
-            if self.player_pos[0] < 0:
-                pass
-            elif self.player_pos[0] > len(self.board.board[0]) // self.board.cell_size:
-                pass
-            elif self.player_pos[1] < 0:
+            if pos_end[0] < 0:
+                if not self.objects[(len(self.board.board[0]) // self.board.cell_size)][self.player_pos[1]]:
+                    pos_end = ((len(self.board.board[0]) // self.board.cell_size), self.player_pos[1])
+                    self.player_pos = ((len(self.board.board[0]) // self.board.cell_size), self.player_pos[1])
+                    self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
+                                                                         pos_end[1] * self.board.cell_size)
+                    self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
+                        self.objects[pos_start[0]][pos_start[1]]
+            elif pos_end[0] > len(self.board.board[0]) // self.board.cell_size:
+                if not self.objects[0][self.player_pos[1]]:
+                    pos_end = (0, self.player_pos[1])
+                    self.player_pos = (0, self.player_pos[1])
+                    self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
+                                                                         pos_end[1] * self.board.cell_size)
+                    self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
+                        self.objects[pos_start[0]][pos_start[1]]
+            elif pos_end[1] < 0:
                 if not self.objects[pos_end[0]][(len(self.board.board[1]) // self.board.cell_size)]:
                     pos_end = (self.player_pos[0], (len(self.board.board[1]) // self.board.cell_size))
                     self.player_pos = (self.player_pos[0], (len(self.board.board[1]) // self.board.cell_size))
@@ -354,9 +365,7 @@ class Ground:
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-                else:
-                    print('Собакен боится идти в лапы смерти')
-            elif self.player_pos[1] > len(self.board.board[1]) // self.board.cell_size:
+            elif pos_end[1] > len(self.board.board[1]) // self.board.cell_size:
                 if not self.objects[pos_end[0]][0]:
                     pos_end = (self.player_pos[0], 0)
                     self.player_pos = (self.player_pos[0], 0)
@@ -364,16 +373,13 @@ class Ground:
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-                else:
-                    print('Собакен боится идти в лапы смерти')
             elif not self.objects[pos_end[0]][pos_end[1]]:
                 if not self.objects[pos_end[0]][pos_end[1]]:
+                    self.player_pos = pos_end
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-                else:
-                    print('Собакен боится идти в лапы смерти')
                 print(self.player_pos)
 
 

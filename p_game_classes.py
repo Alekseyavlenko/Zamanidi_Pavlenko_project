@@ -72,6 +72,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
                 health -= 1
         elif isinstance(turn.bodies[i][0], BulletSprite):
             pass
+
     turn.re_turn()
 # ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
 # turn.bodies[0] = (turn.bodies[0][0], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
