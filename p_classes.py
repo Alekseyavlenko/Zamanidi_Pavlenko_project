@@ -295,7 +295,7 @@ class Ground:
         self.screen = screen
         self.board = Board(width, heigth, 0, 0, cell_size)
         self.tiles = [[None] * ((width // cell_size) + 1) for _ in range(heigth // cell_size + 1)]
-        self.objects = [[None] * ((width // cell_size) + 1) for _ in range(heigth // cell_size + 1)]
+        self.objects = [[None] * ((width // cell_size) + 6) for _ in range(heigth // cell_size + 6)]
         self.sprites = pygame.sprite.Group()
         self.objects_sprites = pygame.sprite.Group()
         self.player_pos = None
@@ -343,23 +343,37 @@ class Ground:
         if isinstance(tipe, PlayerSprite):
             self.player_pos = pos_end
             if self.player_pos[0] < 0:
-                self.objects[self.player_pos[0]][self.player_pos[1]] = None
-                self.deep_init((len(self.board.board[0]) // self.board.cell_size, self.player_pos[1]))
+                pass
             elif self.player_pos[0] > len(self.board.board[0]) // self.board.cell_size:
-                self.objects[self.player_pos[0]][self.player_pos[1]] = None
-                self.deep_init((0, self.player_pos[1]))
+                pass
             elif self.player_pos[1] < 0:
-                self.objects[self.player_pos[0]][self.player_pos[1]] = None
-                self.deep_init((self.player_pos[0], len(self.board.board[1]) // self.board.cell_size))
+                if not self.objects[pos_end[0]][(len(self.board.board[1]) // self.board.cell_size)]:
+                    pos_end = (self.player_pos[0], (len(self.board.board[1]) // self.board.cell_size))
+                    self.player_pos = (self.player_pos[0], (len(self.board.board[1]) // self.board.cell_size))
+                    self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
+                                                                         pos_end[1] * self.board.cell_size)
+                    self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
+                        self.objects[pos_start[0]][pos_start[1]]
+                else:
+                    print('Собакен боится идти в лапы смерти')
             elif self.player_pos[1] > len(self.board.board[1]) // self.board.cell_size:
-                self.objects[self.player_pos[0]][self.player_pos[1]] = None
-                self.deep_init((self.player_pos[0], 0))
+                if not self.objects[pos_end[0]][0]:
+                    pos_end = (self.player_pos[0], 0)
+                    self.player_pos = (self.player_pos[0], 0)
+                    self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
+                                                                         pos_end[1] * self.board.cell_size)
+                    self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
+                        self.objects[pos_start[0]][pos_start[1]]
+                else:
+                    print('Собакен боится идти в лапы смерти')
             elif not self.objects[pos_end[0]][pos_end[1]]:
                 if not self.objects[pos_end[0]][pos_end[1]]:
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
+                else:
+                    print('Собакен боится идти в лапы смерти')
                 print(self.player_pos)
 
 
