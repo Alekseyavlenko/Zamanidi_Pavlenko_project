@@ -4,22 +4,23 @@ import sys
 from random import choice
 
 
-class Board:
-    def __init__(self, width: int, height: int, left: int, top: int, cell_size: int):
-        self.width = width
-        self.height = height
-        self.left = left
-        self.top = top
-        self.cell_size = cell_size
-        self.board = [[pygame.Color(0, 0, 0, 0)] * width for _ in range(height)]
-        self.rect_color = pygame.Color('white')
+class Board:  # класс доски
+    def __init__(self, width: int, height: int, left: int, top: int, cell_size: int):  # инициализация доски
+        self.width = width  # ширина
+        self.height = height  # высота
+        self.left = left  # смещение вправо
+        self.top = top  # смещение вниз
+        self.cell_size = cell_size  # размер одного деления в пикселях
+        self.board = [[pygame.Color(0, 0, 0, 0)] * width for _ in range(height)]  # цвет заливки квадрата
+        self.rect_color = pygame.Color('white')  # цвет границ квадрата
 
     def set_view(self, left: int, top: int, cell_size: int):
-        self.left = left
-        self.top = top
-        self.cell_size = cell_size
+        self.left = left  # новое смещение вправо
+        self.top = top  # новое смещение вниз
+        self.cell_size = cell_size  # новый размер одного деления в пикселях
 
     def change_all_rect_color(self, color: str | tuple, hsva=False, string=False):
+        # смена цвета заливки для всех квадратов
         if hsva:
             color_o = pygame.Color(0, 0, 0)
             color_o.hsva = color
@@ -32,6 +33,7 @@ class Board:
             self.board = [[color] * self.width for _ in range(self.height)]
 
     def change_one_rect_color(self, rect: [int, int], color: str | tuple, hsva=False, string=False):
+        # смена цвета заливки для одного квадрата
         if hsva:
             color_o = pygame.Color(0, 0, 0)
             color_o.hsva = color
@@ -44,6 +46,7 @@ class Board:
             self.board[rect[0]][rect[1]] = color
 
     def change_frame_color(self, color: str | tuple, hsva=False, string=False):
+        # смена цвета границ всех квадратов
         if hsva:
             self.rect_color.hsva = color
         elif string:
@@ -51,7 +54,7 @@ class Board:
         else:
             self.rect_color = pygame.Color(*color)
 
-    def render(self, screen):
+    def render(self, screen):  # отрисовывание доски
         for i in range(self.width):
             for g in range(self.height):
                 pygame.draw.rect(screen, self.board[g][i],
@@ -65,7 +68,7 @@ class Board:
                                   self.cell_size,
                                   self.cell_size), 1)
 
-    def get_click(self, mouse_pos):
+    def get_click(self, mouse_pos):  # получение координат клика на доске
         mouse_pos = ((mouse_pos[0] - self.left) // self.cell_size, (mouse_pos[1] - self.top) // self.cell_size)
         if mouse_pos[0] < 0 or mouse_pos[1] < 0:
             return None
@@ -74,7 +77,7 @@ class Board:
         return mouse_pos[0], mouse_pos[1]
 
 
-def load_image(name, colorkey=None):
+def load_image(name, colorkey=None):  # функция загрузки изображения (из урока)
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
@@ -90,88 +93,87 @@ def load_image(name, colorkey=None):
     return loading_image
 
 
-class SpritePictures:
+class SpritePictures:  # класс спрайта
     def __init__(self, *args, **kwargs):
         self.puctures = {}
-        for i in kwargs:
+        for i in kwargs:  # каждый спрайт - отдельная картинка (это стоит не забывать!!!)
             if isinstance(kwargs[i], str):
                 self.puctures[i] = load_image(kwargs[i])
             else:
                 self.puctures[i] = load_image(kwargs[i][0], kwargs[i][1])
 
-    def __getitem__(self, item: int | str):
+    def __getitem__(self, item: int | str):  # можно получить спрайт как именем, так и ключом
         if isinstance(item, str):
             return self.puctures[item]
         return self.puctures[list(self.puctures)[item]]
 
-    def __reversed__(self, reverse=0):
+    def __reversed__(self, reverse=0):  # функция переворачивает изображения (все)
         if reverse:
             for i in self.puctures:
-                if reverse == 1:
+                if reverse == 1:  # 1 - переворот (горизонт)
                     self.puctures[i] = pygame.transform.flip(self.puctures[i], 1, 0)
-                elif reverse == 2:
+                elif reverse == 2:  # 2 - переворот (вертикаль)
                     self.puctures[i] = pygame.transform.flip(self.puctures[i], 0, 1)
-                elif reverse == 3:
+                elif reverse == 3:  # 3 - переворот (горизонт и вертикаль)
                     self.puctures[i] = pygame.transform.flip(self.puctures[i], 1, 1)
 
 
-class AbstractSpriteClass(pygame.sprite.Sprite):
+class AbstractSpriteClass(pygame.sprite.Sprite):  # от него будут отходить все остальные ветви спрайтов (объектов)
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures):
         super().__init__(group)
-        self.pictures = pictures
-        self.image = self.pictures[0]
-        self.image = self.image
-        self.rect = self.image.get_rect()
+        self.pictures = pictures  # изображения спрайта
+        self.image = self.pictures[0]  # титульное изображение спрайта
+        self.rect = self.image.get_rect()  # положение в пространстве
         self.rect.x = x
         self.rect.y = y
 
-    def update_rect(self, x, y):
+    def update_rect(self, x, y):  # новое положение в пространстве
         self.rect.x, self.rect.y = x, y
 
-    def update_picture(self, update_picture_name: str | int):
+    def update_picture(self, update_picture_name: str | int):  # смена одной картинки на другую
         self.image = self.pictures[update_picture_name]
 
-    def rotate(self, rotation=0):
+    def rotate(self, rotation=0):  # поворот изображения
         self.image = pygame.transform.rotate(self.image, rotation)
 
-    def flip(self, flip_horizontal=False, flip_vertical=False):
+    def flip(self, flip_horizontal=False, flip_vertical=False):  # переворот изображения
         self.image = pygame.transform.flip(self.image, flip_horizontal, flip_vertical)
 
-    def scale(self, x, y):
+    def scale(self, x, y):  # уменьшение или увеличение изображения
         self.image = pygame.transform.scale(self.image, (x, y))
 
 
-class NormalSprite(AbstractSpriteClass):
-
+class NormalSprite(AbstractSpriteClass):  # от него будут отходить игрок, монстры, предметы
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, pictures: SpritePictures,
                  scaling: (int, int)):
         super().__init__(group, x, y, pictures)
-        self.group = group
-        self.scaling = scaling
+        self.group = group  # группа спрайтов (из pygame)
+        self.scaling = scaling  # размеры спрайта
         self.scale(scaling[0], scaling[1])
 
-    def clone(self):
+    def clone(self):  # от этого спрайта можно получить ровно такой же
         return NormalSprite(self.group, self.rect.x, self.rect.y, self.pictures, self.scaling)
 
-    def scale(self, x, y):
+    def scale(self, x, y):  # уменьшение или увеличение изображения
         self.scaling = (x, y)
         self.image = pygame.transform.scale(self.image, (x, y))
 
-    def update_picture(self, update_picture_name: str | int):
+    def update_picture(self, update_picture_name: str | int):  # смена изображений
         self.image = self.pictures[update_picture_name]
         self.image = pygame.transform.scale(self.image, self.scaling)
 
 
-class PlayerSprite(NormalSprite):
+class PlayerSprite(NormalSprite):  # класс игрока
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
         super().__init__(group, x, y, SpritePictures(p0=('Doge_Passive_0.png', 'white'),
                                                      p1=('Doge_Passive_1.png', 'white'),
                                                      p2=('Doge_Passive_0.png', 'white'),
                                                      p3=('Doge_Passive_1.png', 'white')),
                          scaling)
+        self.reversing = False
         self.cicl = 0
 
-    def cicle_animation(self):
+    def cicle_animation(self):  # функция запускается в каждом тике игры (то есть это - анимация)
         if not self.cicl:
             self.cicl = 1
             self.update_picture('p1')
@@ -185,7 +187,8 @@ class PlayerSprite(NormalSprite):
             self.cicl = 0
             self.update_picture('p0')
 
-    def change_animation(self, passive=False, run=False, reverse=0):
+    def change_animation(self, passive=False, run=False, reverse=False):  # смена анимации (на заготовки)
+        self.reversing = reverse
         if passive:
             self.pictures = SpritePictures(p0=('Doge_Passive_0.png', 'white'),
                                            p1=('Doge_Passive_1.png', 'white'),
@@ -196,10 +199,10 @@ class PlayerSprite(NormalSprite):
                                            p1=('Doge_Walk_0.png', 'white'),
                                            p2=('Doge_Walk_1.png', 'white'),
                                            p3=('Doge_Walk_0.png', 'white'))
-        self.pictures.__reversed__(reverse)
+        self.pictures.__reversed__(self.reversing)
 
 
-class BulletMonsterSprite(NormalSprite):
+class BulletMonsterSprite(NormalSprite):  # класс рядового противника
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
         super().__init__(group, x, y, SpritePictures(p0=('BulletMonster_Normal_0.png', 'white'),
                                                      p1=('BulletMonster_Normal_1.png', 'white'),
@@ -208,7 +211,7 @@ class BulletMonsterSprite(NormalSprite):
                          scaling)
         self.cicl = 0
 
-    def cicle_animation(self):
+    def cicle_animation(self):  # анимация
         if not self.cicl:
             self.cicl = 1
             self.update_picture('p1')
@@ -223,7 +226,7 @@ class BulletMonsterSprite(NormalSprite):
             self.update_picture('p0')
 
 
-class BulletSprite(NormalSprite):
+class BulletSprite(NormalSprite):  # класс призывателя рядовых противников
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
         super().__init__(group, x, y, SpritePictures(p0=('Bullet_Sprite_0.png', 'white'),
                                                      p1=('Bullet_Sprite_1.png', 'white'),
@@ -232,7 +235,7 @@ class BulletSprite(NormalSprite):
                          scaling)
         self.cicl = 0
 
-    def cicle_animation(self):
+    def cicle_animation(self):  # анимация
         if not self.cicl:
             self.cicl = 1
             self.update_picture('p1')
@@ -247,20 +250,20 @@ class BulletSprite(NormalSprite):
             self.update_picture('p0')
 
 
-class HealphBar:
+class HealphBar:  # полоска здоровья
     def __init__(self, group, points: int, cell_size: int):
         self.healph_bar_board = Board(points, 1, 0, 0, cell_size)
         health = NormalSprite(group,
                               -100, -100,
                               SpritePictures(n1='valentine_heart.png',
                                              n2='valentine_broken_heart.png'), (cell_size - 3, cell_size - 3))
-        self.health = [health.clone() for _ in range(points)]
+        self.health = [health.clone() for _ in range(points)]  # извините, костыль
         self.zdravie = 6
         for i in range(points):
             self.health[i].update_rect((i * cell_size) + 1, 1)
         del health
 
-    def __isub__(self, other: int):
+    def __isub__(self, other: int):  # нанесение урона (по задумке, всегда на одно сердечко)
         self.zdravie -= 1
         if self.zdravie < len(self.health):
             self.health[self.zdravie].update_picture(1)
@@ -274,7 +277,7 @@ class HealphBar:
         print('Собакену дырявят ХП!')
         return self
 
-    def __iadd__(self, other: int):
+    def __iadd__(self, other: int):  # лечение (по задумке, всегда на одно сердце)
         if self.zdravie > len(self.health):
             self.zdravie += 1
         if self.zdravie < len(self.health):
@@ -284,64 +287,64 @@ class HealphBar:
         print('Собакен выздоравливается!')
         return self
 
-    def is_dead_or_alive(self):
+    def is_dead_or_alive(self):  # проверка на умерщвлённость
         if self.zdravie <= 0:
             return False
         return True
 
 
-class Ground:
-    def __init__(self, screen, width, heigth, cell_size):
-        self.screen = screen
-        self.board = Board(width, heigth, 0, 0, cell_size)
-        self.tiles = [[None] * ((width // cell_size) + 1) for _ in range(heigth // cell_size + 1)]
-        self.objects = [[None] * ((width // cell_size) + 6) for _ in range(heigth // cell_size + 6)]
-        self.sprites = pygame.sprite.Group()
-        self.objects_sprites = pygame.sprite.Group()
-        self.player_pos = None
+class Ground:  # класс поля всех действ
+    def __init__(self, screen, width, heigth, cell_size):  # сотворение мира
+        self.screen = screen  # знание места отображения
+        self.board = Board(width, heigth, 0, 0, cell_size)  # для хранения всяких чисел важных и необходимых
+        self.tiles = [[None] * ((width // cell_size) + 1) for _ in range(heigth // cell_size + 1)]  # скины квадратиков
+        self.objects = [[None] * ((width // cell_size) + 6) for _ in range(heigth // cell_size + 6)]  # спрайты
+        self.sprites = pygame.sprite.Group()  # группа спрайтов для скинов дракватиков
+        self.objects_sprites = pygame.sprite.Group()  # группа спрайтов для объектов и субъектов
+        self.player_pos = None  # заготовка для пришествия на свет машинно-божий великого собакена
 
-    def deep_init(self, player_pos: (int, int)):
-        self.player_pos = player_pos
+    def deep_init(self, player_pos: (int, int)):  # сотворение сути мироздания
+        self.player_pos = player_pos  # координаты сего представителя собачьего рода
         self.add_object(PlayerSprite(self.objects_sprites, self.board.cell_size * player_pos[0],
                                      self.board.cell_size * player_pos[1],
                                      (self.board.cell_size, self.board.cell_size)),
                         (player_pos[0], player_pos[1]))
         for i in range(len(self.tiles[0])):
             for g in range(len(self.tiles)):
-                self.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg'])), (i, g))
+                self.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg'])), (i, g))  # обувание квадратов
 
-    def render(self):
-        self.board.render(self.screen)
-        self.sprites.draw(self.screen)
-        self.objects[self.player_pos[0]][self.player_pos[1]].cicle_animation()
-        self.objects_sprites.draw(self.screen)
+    def render(self):  # отрисование
+        self.board.render(self.screen)  # на всякий пожарский доска рисуется
+        self.sprites.draw(self.screen)  # на обязательный пожарский кожурки квадратов отображаются
+        self.objects[self.player_pos[0]][self.player_pos[1]].cicle_animation()  # собакен в цикле
+        self.objects_sprites.draw(self.screen)  # все действа, сущности, тонкости летят в сетчатку глаза
 
-    def get_click(self, mouse_pos):
+    def get_click(self, mouse_pos):  # курс курсора на позицию мышления мыши
         mouse_position = self.board.get_click(mouse_pos)
         object_in_position = self.objects[mouse_position[0]][mouse_position[1]]
         print(mouse_position, object_in_position)
         return mouse_position, object_in_position
 
-    def add_object(self, objject: NormalSprite | None, pos: (int, int)):
+    def add_object(self, objject: NormalSprite | None, pos: (int, int)):  # рождение новой бездушности
         self.objects[pos[0]][pos[1]] = objject
 
-    def assign_sprite(self, pictures: SpritePictures, pos: (int, int), offset=(0, 0)):
+    def assign_sprite(self, pictures: SpritePictures, pos: (int, int), offset=(0, 0)):  # перебувание квадратика
         self.tiles[pos[0]][pos[1]] = NormalSprite(self.sprites,
                                                   (pos[0] * self.board.cell_size) + offset[0],
                                                   (pos[1] * self.board.cell_size) + offset[1],
                                                   pictures,
                                                   (self.board.cell_size, self.board.cell_size))
 
-    def move_object(self, pos_start: (int, int), pos_end: (int, int), tipe=None):
-        if not tipe:
+    def move_object(self, pos_start: (int, int), pos_end: (int, int), tipe=None):  # телепортоперемещение
+        if not tipe:  # воздуходувов движение
             if self.objects[pos_start[0]][pos_start[1]]:
                 if not self.objects[pos_end[0]][pos_end[1]]:
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-        if isinstance(tipe, PlayerSprite):
-            if pos_end[0] < 0:
+        if isinstance(tipe, PlayerSprite):  # великого собакена физическое размещение
+            if pos_end[0] < 0:  # мир бубличен
                 if not self.objects[(len(self.board.board[0]) // self.board.cell_size)][self.player_pos[1]]:
                     pos_end = ((len(self.board.board[0]) // self.board.cell_size), self.player_pos[1])
                     self.player_pos = ((len(self.board.board[0]) // self.board.cell_size), self.player_pos[1])
@@ -349,15 +352,15 @@ class Ground:
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-            elif pos_end[0] > len(self.board.board[0]) // self.board.cell_size:
-                if not self.objects[0][self.player_pos[1]]:
+            elif pos_end[0] > len(self.board.board[0]) // self.board.cell_size:  # мир бубличен
+                if not self.objects[0][self.player_pos[1]]:  # не пойдёт собакен в лапы смерти
                     pos_end = (0, self.player_pos[1])
                     self.player_pos = (0, self.player_pos[1])
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-            elif pos_end[1] < 0:
+            elif pos_end[1] < 0:  # мир бубличен
                 if not self.objects[pos_end[0]][(len(self.board.board[1]) // self.board.cell_size)]:
                     pos_end = (self.player_pos[0], (len(self.board.board[1]) // self.board.cell_size))
                     self.player_pos = (self.player_pos[0], (len(self.board.board[1]) // self.board.cell_size))
@@ -365,16 +368,16 @@ class Ground:
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-            elif pos_end[1] > len(self.board.board[1]) // self.board.cell_size:
-                if not self.objects[pos_end[0]][0]:
+            elif pos_end[1] > len(self.board.board[1]) // self.board.cell_size:  # мир бубличен
+                if not self.objects[pos_end[0]][0]:  # не пойдёт собакен в лапы смерти
                     pos_end = (self.player_pos[0], 0)
                     self.player_pos = (self.player_pos[0], 0)
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                          pos_end[1] * self.board.cell_size)
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
-            elif not self.objects[pos_end[0]][pos_end[1]]:
-                if not self.objects[pos_end[0]][pos_end[1]]:
+            elif not self.objects[pos_end[0]][pos_end[1]]:  # мир... мир пластичен
+                if not self.objects[pos_end[0]][pos_end[1]]:  # не пойдёт собакен в лапы смерти
                     self.player_pos = pos_end
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                          pos_end[1] * self.board.cell_size)
@@ -383,27 +386,27 @@ class Ground:
                 print(self.player_pos)
 
 
-class Turns:
+class Turns:  # жизнь - игра, но игра по партиям
     def __init__(self):
-        self.turn = False
+        self.turn = True  # собакен не бел, не чист, но ходит первее
+        self.bodies = []  # другие не негры, но тьма, и ходят вторее
 
-    def deep_init(self, ground, *args: (int, int)):
-        self.bodies = []
+    def deep_init(self, ground, *args: (int, int)):  # сканированье на всякий погожий иль день черней некуда
         for i in args:
             self.bodies.append([ground.objects[i[0]][i[1]], i])
 
-    def add_object(self, ground, pos: (int, int)):
+    def add_object(self, ground, pos: (int, int)):  # добавка надбавки на голову собакевича
         if ground.objects[pos[0]][pos[1]]:
             self.bodies.append([ground.objects[pos[0]][pos[1]], pos])
 
-    def __bool__(self):
+    def __bool__(self):  # здесь ходят по правде
         return self.turn
 
-    def re_turn(self):
+    def re_turn(self):  # не смеет сварожец преступить часов ход
         self.turn = True if not self.turn else False
 
-    def intellectual_move(self):
+    def intellectual_move(self):  # чтоб сабакам отрадные не походили на глуповцев
         pass
 
-    def __getitem__(self, item):
+    def __getitem__(self, item):  # индекс что старший брат властовал семи
         return self.bodies[item]

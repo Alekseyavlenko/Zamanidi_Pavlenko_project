@@ -9,7 +9,7 @@ from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, Pl
 from p_game_classes import dogge_move, turning
 
 
-def game_sobstvenno(*args, **kwargs):
+def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
     # подготовка
     pygame.init()
     pygame.display.set_caption('game')
@@ -34,7 +34,7 @@ def game_sobstvenno(*args, **kwargs):
     all_sprites.draw(screen)
     pygame.mixer.music.load('data/James Primate — Threat - Garbage Wastes.mp3')
     pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(0.0)
+    pygame.mixer.music.set_volume(music_value)
     turn = Turns()
     turn.deep_init(ground)
     turn.add_object(ground, (3, 4))
