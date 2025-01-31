@@ -32,7 +32,11 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
         BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 6, ground.board.cell_size * 6,
                             (ground.board.cell_size, ground.board.cell_size)), (6, 6))
     all_sprites.draw(screen)
-    pygame.mixer.music.load('data/James Primate — Threat - Garbage Wastes.mp3')
+
+    if harding == 1 or harding == 2:
+        pygame.mixer.music.load('data/James Primate — Threat - Garbage Wastes.mp3')
+    elif harding == 3:
+        pygame.mixer.music.load('data/Connor (12Lbs) Skidmore  — Sheer Ice Torrent.mp3')
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(music_value)
     turn = Turns()
@@ -66,4 +70,4 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 # def main():
 
 if __name__ == '__main__':
-    game_sobstvenno()
+    game_sobstvenno(harding=3, music_value=1)

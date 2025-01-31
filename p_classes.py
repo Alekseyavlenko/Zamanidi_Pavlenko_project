@@ -408,5 +408,5 @@ class Turns:  # жизнь - игра, но игра по партиям
     def intellectual_move(self):  # чтоб сабакам отрадные не походили на глуповцев
         pass
 
-    def __getitem__(self, item):  # индекс что старший брат властовал семи
+    def __getitem__(self, item):  # индекс чтоб старший брат властовал семи
         return self.bodies[item]
