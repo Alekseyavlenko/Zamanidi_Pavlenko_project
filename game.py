@@ -6,7 +6,7 @@ import sys
 from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
     BulletMonsterSprite, Turns, Jaw, JawsBar
-from p_game_classes import dogge_move, turning
+from p_game_classes import dogge_move, turning, dogge_search
 
 
 def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
@@ -56,9 +56,13 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
                 ground.get_click(event.pos)
             if True in pygame.key.get_pressed():
                 if turn:
-                    # если нужен индекс кнопки print(pygame.key.get_pressed().index(True))
+                    # если нужен индекс кнопки
+                    print(pygame.key.get_pressed().index(True))
                     if pygame.key.get_pressed().index(True) in [79, 80, 81, 82]:
                         dogge_move(ground)
+                        turn.re_turn()
+                    if pygame.key.get_pressed().index(True) == 225:
+                        dogge_search(ground)
                         turn.re_turn()
 
         screen.fill('black')

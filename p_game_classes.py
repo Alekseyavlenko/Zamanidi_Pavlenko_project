@@ -35,6 +35,10 @@ def dogge_move(ground):
         print('собакен выпал из мира')
 
 
+def dogge_search(ground: Ground):
+    pass
+
+
 def turning(ground: Ground, turn: Turns, health: HealphBar):
     player_pos = ground.player_pos
     for i in range(len(turn.bodies)):
@@ -97,7 +101,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
                                   (turn.bodies[i][1][0] + c1,
                                    turn.bodies[i][1][1] + c2))
             elif isinstance(ground.objects[turn.bodies[i][1][0] + c1][turn.bodies[i][1][1] + c2], PlayerSprite):
-                print('BulletMonster врезался в собакена!')
+                print('Bullet врезался в собакена!')
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].kill()
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]] = None
                 turn.bodies[i] = (None,
