@@ -5,7 +5,7 @@ import os
 import sys
 from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
-    BulletMonsterSprite, Turns
+    BulletMonsterSprite, Turns, Jaw
 from p_game_classes import dogge_move, turning
 
 
@@ -31,6 +31,8 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
     ground.add_object(
         BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 6, ground.board.cell_size * 6,
                             (ground.board.cell_size, ground.board.cell_size)), (6, 6))
+    ground.add_object(Jaw(ground.objects_sprites, ground.board.cell_size * 9, ground.board.cell_size * 1,
+                          (ground.board.cell_size, ground.board.cell_size)), (9, 1))
     all_sprites.draw(screen)
 
     if harding == 1 or harding == 2:
@@ -43,6 +45,7 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
     turn.deep_init(ground)
     turn.add_object(ground, (3, 4))
     turn.add_object(ground, (6, 6))
+    turn.add_object(ground, (9, 1))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

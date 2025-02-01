@@ -38,7 +38,6 @@ def dogge_move(ground):
 def turning(ground: Ground, turn: Turns, health: HealphBar):
     player_pos = ground.player_pos
     for i in range(len(turn.bodies)):
-        print(i)
         if isinstance(turn.bodies[i][0], BulletMonsterSprite):
             c1, c2 = choice([-1, 0, 1]), choice([-1, 0, 1])
             if turn.bodies[i][1][0] == 0:
@@ -53,8 +52,8 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
                 if not ground.objects[turn.bodies[i][1][0] + 0][turn.bodies[i][1][1] + 1]:
                     ground.add_object(
                         BulletSprite(ground.objects_sprites, ground.board.cell_size * (turn.bodies[i][1][0] + 0),
-                                            ground.board.cell_size * (turn.bodies[i][1][1] + 1),
-                                            (ground.board.cell_size, ground.board.cell_size)),
+                                     ground.board.cell_size * (turn.bodies[i][1][1] + 1),
+                                     (ground.board.cell_size, ground.board.cell_size)),
                         (turn.bodies[i][1][0] + 0, turn.bodies[i][1][1] + 1))
                     turn.add_object(ground, (turn.bodies[i][1][0] + 0, turn.bodies[i][1][1] + 1))
                     print('BulletMonster проталкивает часть себя ближе к клавиатуре!')
@@ -68,7 +67,9 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
                 print('BulletMonster врезался в собакена!')
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].kill()
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]] = None
-                del turn.bodies[i]
+                turn.bodies[i] = (None,
+                                  (turn.bodies[i][1][0],
+                                   turn.bodies[i][1][1]))
                 health -= 1
         elif isinstance(turn.bodies[i][0], BulletSprite):
             what_it_do_in_this_turn = (0, 0)
@@ -94,10 +95,13 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
                 print('BulletMonster врезался в собакена!')
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].kill()
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]] = None
-                del turn.bodies[i]
+                turn.bodies[i] = (None,
+                                  (turn.bodies[i][1][0],
+                                   turn.bodies[i][1][1]))
                 health -= 1
-
-
+    for i in turn.bodies:
+        if not i[0]:
+            del turn.bodies[turn.bodies.index(i)]
 
     turn.re_turn()
 # ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))

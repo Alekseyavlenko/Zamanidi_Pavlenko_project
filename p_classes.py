@@ -163,6 +163,31 @@ class NormalSprite(AbstractSpriteClass):  # от него будут отход�
         self.image = pygame.transform.scale(self.image, self.scaling)
 
 
+class Jaw(NormalSprite):
+    def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
+        super().__init__(group, x, y, SpritePictures(p0=('chelust.jpg', -1),
+                                                     p1=('chelust_pobolshe.jpg', -1),
+                                                     p2=('chelust.jpg', -1),
+                                                     p3=('chelust_pobolshe.jpg', -1)),
+                         scaling)
+        self.reversing = False
+        self.cicl = 0
+
+    def cicle_animation(self):
+        if not self.cicl:
+            self.cicl = 1
+            self.update_picture('p1')
+        elif self.cicl == 1:
+            self.cicl = 2
+            self.update_picture('p2')
+        elif self.cicl == 2:
+            self.cicl = 3
+            self.update_picture('p3')
+        elif self.cicl == 3:
+            self.cicl = 0
+            self.update_picture('p0')
+
+
 class PlayerSprite(NormalSprite):  # класс игрока
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
         super().__init__(group, x, y, SpritePictures(p0=('Doge_Passive_0.png', 'white'),
@@ -170,7 +195,7 @@ class PlayerSprite(NormalSprite):  # класс игрока
                                                      p2=('Doge_Passive_0.png', 'white'),
                                                      p3=('Doge_Passive_1.png', 'white')),
                          scaling)
-        self.reversing = False
+        self.reversing = 0
         self.cicl = 0
 
     def cicle_animation(self):  # функция запускается в каждом тике игры (то есть это - анимация)
@@ -187,7 +212,7 @@ class PlayerSprite(NormalSprite):  # класс игрока
             self.cicl = 0
             self.update_picture('p0')
 
-    def change_animation(self, passive=False, run=False, reverse=False):  # смена анимации (на заготовки)
+    def change_animation(self, passive=False, run=False, reverse=0):  # смена анимации (на заготовки)
         self.reversing = reverse
         if passive:
             self.pictures = SpritePictures(p0=('Doge_Passive_0.png', 'white'),
