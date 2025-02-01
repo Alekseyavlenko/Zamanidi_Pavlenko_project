@@ -71,6 +71,11 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
                                   (turn.bodies[i][1][0],
                                    turn.bodies[i][1][1]))
                 health -= 1
+                ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(passive=True,
+                                                                                            reverse=ground.objects[
+                                                                                                ground.player_pos[0]]
+                                                                                            [ground.player_pos[
+                                                                                                    1]].reversing)
         elif isinstance(turn.bodies[i][0], BulletSprite):
             what_it_do_in_this_turn = (0, 0)
             if turn.bodies[i][1][0] == player_pos[0] or turn.bodies[i][1][1] == player_pos[1]:
@@ -99,6 +104,11 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
                                   (turn.bodies[i][1][0],
                                    turn.bodies[i][1][1]))
                 health -= 1
+                ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(passive=True,
+                                                                                            reverse=ground.objects[
+                                                                                                ground.player_pos[0]]
+                                                                                            [ground.player_pos[
+                                                                                                    1]].reversing)
     for i in turn.bodies:
         if not i[0]:
             del turn.bodies[turn.bodies.index(i)]

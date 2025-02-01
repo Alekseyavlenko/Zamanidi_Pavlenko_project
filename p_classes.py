@@ -283,7 +283,7 @@ class HealphBar:  # полоска здоровья
                               SpritePictures(n1='valentine_heart.png',
                                              n2='valentine_broken_heart.png'), (cell_size - 3, cell_size - 3))
         self.health = [health.clone() for _ in range(points)]  # извините, костыль
-        self.zdravie = 6
+        self.zdravie = points
         for i in range(points):
             self.health[i].update_rect((i * cell_size) + 1, 1)
         del health
@@ -316,6 +316,42 @@ class HealphBar:  # полоска здоровья
         if self.zdravie <= 0:
             return False
         return True
+
+
+class JawsBar:
+    def __init__(self, group, points: int, cell_size: int, end_coords: int):
+        self.jaws_bar_board = Board(points, 1, 0, 0, cell_size)
+        jaw = NormalSprite(group,
+                           -100, -100,
+                           SpritePictures(n1=('chelust.jpg', -1), n2=('Без имени.png', -1)),
+                           (cell_size - 3, cell_size - 3))
+        self.health = [jaw.clone() for _ in range(points)]  # извините, костыль
+        self.kus = points
+        for i in range(points):
+            self.health[i].update_rect(end_coords - (i * cell_size) - cell_size, 1)
+        del jaw
+
+    def __iadd__(self, other: int):  # лечение (по задумке, всегда на одно сердце)
+        if self.kus > len(self.health):
+            self.kus += 1
+        if self.kus < len(self.health):
+            self.health[self.kus].update_picture(0)
+            self.health[self.kus].scale(self.jaws_bar_board.cell_size - 3,
+                                        self.jaws_bar_board.cell_size - 3)
+        return self
+
+    def __isub__(self, other: int):  # нанесение урона (по задумке, всегда на одно сердечко)
+        self.kus -= 1
+        if self.kus < len(self.health):
+            self.health[self.kus].update_picture(1)
+            self.health[self.kus].scale(self.jaws_bar_board.cell_size - 3,
+                                        self.jaws_bar_board.cell_size - 3)
+        else:
+            self.kus = 2
+            self.health[self.kus].update_picture(1)
+            self.health[self.kus].scale(self.jaws_bar_board.cell_size - 3,
+                                        self.jaws_bar_board.cell_size - 3)
+        return self
 
 
 class Ground:  # класс поля всех действ

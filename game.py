@@ -5,7 +5,7 @@ import os
 import sys
 from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
-    BulletMonsterSprite, Turns, Jaw
+    BulletMonsterSprite, Turns, Jaw, JawsBar
 from p_game_classes import dogge_move, turning
 
 
@@ -21,6 +21,8 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
     # спрайты интефейса
     all_sprites = pygame.sprite.Group()
     health = HealphBar(all_sprites, 6, 21)  # здоровье
+    jaws = JawsBar(all_sprites, 3, 21, 550)
+    jaws -= 1
 
     # поле
     ground = Ground(screen, 500, 500, 50)
