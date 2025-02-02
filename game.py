@@ -20,10 +20,8 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 
     # спрайты интефейса
     all_sprites = pygame.sprite.Group()
-    health = HealphBar(all_sprites, 6, 21)  # здоровье
+    health = HealphBar(all_sprites, 6, 21)  # здоровье и оружие
     jaws = JawsBar(all_sprites, 3, 21, 550)
-    jaws -= 1
-    jaws -= 1
 
     # поле
     ground = Ground(screen, 500, 500, 50)
@@ -80,4 +78,4 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 # def main():
 
 if __name__ == '__main__':
-    game_sobstvenno(harding=3, music_value=1)
+    game_sobstvenno(harding=3, music_value=0.0)

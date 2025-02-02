@@ -50,6 +50,7 @@ def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healfbar: Healph
             ground.objects[i[0]][i[1]].kill()
             ground.objects[i[0]][i[1]] = None
             jawsbar += 1
+    ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(loot=True)
 
 
 def turning(ground: Ground, turn: Turns, health: HealphBar):
