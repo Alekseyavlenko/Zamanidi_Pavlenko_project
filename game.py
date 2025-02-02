@@ -80,4 +80,4 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 # def main():
 
 if __name__ == '__main__':
-    game_sobstvenno(harding=3, music_value=0.7)
+    game_sobstvenno(harding=3, music_value=0.0)

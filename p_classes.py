@@ -364,6 +364,11 @@ class JawsBar:
                                        self.jaws_bar_board.cell_size - 3)
         return self
 
+    def is_exists_or_not_exists(self):  # проверка на умерщвлённость
+        if self.kus <= 0:
+            return False
+        return True
+
 
 class Ground:  # класс поля всех действ
     def __init__(self, screen, width, heigth, cell_size):  # сотворение мира
@@ -469,7 +474,7 @@ class Turns:  # жизнь - игра, но игра по партиям
 
     def add_object(self, ground, pos: (int, int)):  # добавка надбавки на голову собакевича
         if ground.objects[pos[0]][pos[1]]:
-            self.bodies.append([ground.objects[pos[0]][pos[1]], pos])
+            self.bodies.append((ground.objects[pos[0]][pos[1]], pos))
 
     def __bool__(self):  # здесь ходят по правде
         return self.turn
