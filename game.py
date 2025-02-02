@@ -5,7 +5,7 @@ import os
 import sys
 from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
-    BulletMonsterSprite, Turns, Jaw, JawsBar
+    BulletMonsterSprite, Turns, Jaw, JawsBar, Heal
 from p_game_classes import dogge_move, turning, dogge_search, dagge_fight
 
 
@@ -34,6 +34,8 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
                             (ground.board.cell_size, ground.board.cell_size)), (6, 6))
     ground.add_object(Jaw(ground.objects_sprites, ground.board.cell_size * 9, ground.board.cell_size * 1,
                           (ground.board.cell_size, ground.board.cell_size)), (9, 1))
+    ground.add_object(Heal(ground.objects_sprites, ground.board.cell_size * 0, ground.board.cell_size * 0,
+                          (ground.board.cell_size, ground.board.cell_size)), (0, 0))
     all_sprites.draw(screen)
 
     if harding == 1 or harding == 2:
@@ -47,6 +49,7 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
     turn.add_object(ground, (3, 4))
     turn.add_object(ground, (6, 6))
     turn.add_object(ground, (9, 1))
+    turn.add_object(ground, (0, 0))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -56,15 +59,15 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
             if True in pygame.key.get_pressed():
                 if turn:
                     # если нужен индекс кнопки
-                    # print(pygame.key.get_pressed().index(True))
+                    print(pygame.key.get_pressed().index(True))
                     if pygame.key.get_pressed().index(True) in [79, 80, 81, 82]:
                         dogge_move(ground)
                         turn.re_turn()
-                    if pygame.key.get_pressed().index(True) == 224:
-                        dogge_search(ground, turn, jaws, health)
+                    if pygame.key.get_pressed().index(True) == 224 or pygame.key.get_pressed().index(True) == 228:
+                        dogge_search(ground, turn, jaws, health, harding)
                         turn.re_turn()
-                    if pygame.key.get_pressed().index(True) == 225:
-                        dagge_fight(ground, turn, jaws)
+                    if pygame.key.get_pressed().index(True) == 225 or pygame.key.get_pressed().index(True) == 229:
+                        dagge_fight(ground, turn, jaws, health, harding)
 
         screen.fill('black')
         ground.render()
@@ -80,4 +83,4 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 # def main():
 
 if __name__ == '__main__':
-    game_sobstvenno(harding=3, music_value=0.0)
+    game_sobstvenno(harding=2, music_value=0.0)

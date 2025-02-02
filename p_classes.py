@@ -11,7 +11,8 @@ class Board:  # класс доски
         self.left = left  # смещение вправо
         self.top = top  # смещение вниз
         self.cell_size = cell_size  # размер одного деления в пикселях
-        self.board = [[pygame.Color(0, 0, 0, 0)] * width for _ in range(height)]  # цвет заливки квадрата
+        self.board = [[pygame.Color(0, 0, 0, 0)] * width for _ in
+                      range(height)]  # цвет заливки квадрата
         self.rect_color = pygame.Color('white')  # цвет границ квадрата
 
     def set_view(self, left: int, top: int, cell_size: int):
@@ -163,6 +164,31 @@ class NormalSprite(AbstractSpriteClass):  # от него будут отход�
         self.image = pygame.transform.scale(self.image, self.scaling)
 
 
+class Heal(NormalSprite):
+    def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
+        super().__init__(group, x, y, SpritePictures(p0=('Flag_of_the_Red_Cross_0.png', -1),
+                                                     p1=('Flag_of_the_Red_Cross_1.png', -1),
+                                                     p2=('Flag_of_the_Red_Cross_0.png', -1),
+                                                     p3=('Flag_of_the_Red_Cross_1.png', -1)),
+                         scaling)
+        self.reversing = False
+        self.cicl = 0
+
+    def cicle_animation(self):
+        if not self.cicl:
+            self.cicl = 1
+            self.update_picture('p1')
+        elif self.cicl == 1:
+            self.cicl = 2
+            self.update_picture('p2')
+        elif self.cicl == 2:
+            self.cicl = 3
+            self.update_picture('p3')
+        elif self.cicl == 3:
+            self.cicl = 0
+            self.update_picture('p0')
+
+
 class Jaw(NormalSprite):
     def __init__(self, group: pygame.sprite.Group, x: int, y: int, scaling: (int, int)):
         super().__init__(group, x, y, SpritePictures(p0=('chelust.jpg', -1),
@@ -212,7 +238,8 @@ class PlayerSprite(NormalSprite):  # класс игрока
             self.cicl = 0
             self.update_picture('p0')
 
-    def change_animation(self, passive=False, run=False, loot=False, fight=False, reverse=0):  # смена анимации (на заготовки)
+    def change_animation(self, passive=False, run=False, loot=False, fight=False,
+                         reverse=0):  # смена анимации (на заготовки)
         self.reversing = reverse
         if passive:
             self.pictures = SpritePictures(p0=('Doge_Passive_0.png', 'white'),
@@ -465,6 +492,7 @@ class Ground:  # класс поля всех действ
 
 class Turns:  # жизнь - игра, но игра по партиям
     def __init__(self):
+        self.count = 0.0
         self.turn = True  # собакен не бел, не чист, но ходит первее
         self.bodies = []  # другие не негры, но тьма, и ходят вторее
 
@@ -477,13 +505,26 @@ class Turns:  # жизнь - игра, но игра по партиям
             self.bodies.append((ground.objects[pos[0]][pos[1]], pos))
 
     def __bool__(self):  # здесь ходят по правде
+        self.count += 0.5
         return self.turn
 
     def re_turn(self):  # не смеет сварожец преступить часов ход
         self.turn = True if not self.turn else False
 
-    def intellectual_move(self):  # чтоб сабакам отрадные не походили на глуповцев
+    def intellectual_move(self):  # чтоб собакам отрадные не походили на глуповцев
         pass
+
+    def jaws_check(self):
+        for i in self.bodies:
+            if isinstance(i[0], Jaw):
+                return True
+        return None
+
+    def heal_check(self):
+        for i in self.bodies:
+            if isinstance(i[0], Heal):
+                return True
+        return None
 
     def __getitem__(self, item):  # индекс чтоб старший брат властовал семи
         return self.bodies[item]

@@ -3,7 +3,7 @@ import os
 import sys
 from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
-    BulletMonsterSprite, Turns, Jaw, JawsBar
+    BulletMonsterSprite, Turns, Jaw, JawsBar, Heal
 
 
 def dogge_move(ground):
@@ -35,7 +35,7 @@ def dogge_move(ground):
         print('собакен выпал из мира')
 
 
-def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar):
+def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar, healph: HealphBar, hard: int):
     need_to_fight = [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
                      (ground.player_pos[0] - 1, ground.player_pos[1]),
                      (ground.player_pos[0] - 1, ground.player_pos[1] + 1),
@@ -46,15 +46,22 @@ def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar):
                      (ground.player_pos[0], ground.player_pos[1] - 1)]
     if jawsbar.is_exists_or_not_exists():
         print('собакен бросается в атаку!')
+        hp = 0
         for i in need_to_fight:
             if isinstance(ground.objects[i[0]][i[1]], BulletSprite):
                 del turn.bodies[turn.bodies.index([ground.objects[i[0]][i[1]], i])]
                 ground.objects[i[0]][i[1]].kill()
                 ground.objects[i[0]][i[1]] = None
+                hp += 1
             if isinstance(ground.objects[i[0]][i[1]], BulletMonsterSprite):
                 del turn.bodies[turn.bodies.index((ground.objects[i[0]][i[1]], i))]
                 ground.objects[i[0]][i[1]].kill()
                 ground.objects[i[0]][i[1]] = None
+                hp += 1
+        if hp:
+            if hard == 1:
+                healph += 1
+
     else:
         print('у собакена нет челюстей для атаки!')
     jawsbar -= 1
@@ -64,7 +71,7 @@ def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar):
             1]].reversing)
 
 
-def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healfbar: HealphBar):
+def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healphbar: HealphBar, hard):
     need_to_chek = [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
                     (ground.player_pos[0] - 1, ground.player_pos[1]),
                     (ground.player_pos[0] - 1, ground.player_pos[1] + 1),
@@ -79,6 +86,13 @@ def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healfbar: Healph
             ground.objects[i[0]][i[1]].kill()
             ground.objects[i[0]][i[1]] = None
             jawsbar += 1
+        if isinstance(ground.objects[i[0]][i[1]], Heal):
+            del turn.bodies[turn.bodies.index((ground.objects[i[0]][i[1]], i))]
+            ground.objects[i[0]][i[1]].kill()
+            ground.objects[i[0]][i[1]] = None
+            healphbar += 1
+            if hard == 3:
+                jawsbar -= 1
     ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(loot=True)
 
 
@@ -159,6 +173,13 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
     for i in turn.bodies:
         if not i[0]:
             del turn.bodies[turn.bodies.index(i)]
+
+    if not turn.jaws_check():
+        need_to_spawn_jaws = [(1, 1),
+                              (1, len(ground.board.board[1]) - 1),
+                              (len(ground.board.board) - 1, len(ground.board.board[1]) - 1),
+                              (len(ground.board.board) - 1, 1)]
+        print(need_to_spawn_jaws)
 
     turn.re_turn()
 # ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
