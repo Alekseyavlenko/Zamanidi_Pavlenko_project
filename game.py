@@ -6,7 +6,7 @@ import sys
 from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
     BulletMonsterSprite, Turns, Jaw, JawsBar
-from p_game_classes import dogge_move, turning, dogge_search
+from p_game_classes import dogge_move, turning, dogge_search, dagge_fight
 
 
 def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
@@ -63,6 +63,8 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
                     if pygame.key.get_pressed().index(True) == 224:
                         dogge_search(ground, turn, jaws, health)
                         turn.re_turn()
+                    if pygame.key.get_pressed().index(True) == 225:
+                        dagge_fight(ground, turn, jaws)
 
         screen.fill('black')
         ground.render()
@@ -78,4 +80,4 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 # def main():
 
 if __name__ == '__main__':
-    game_sobstvenno(harding=3, music_value=0.0)
+    game_sobstvenno(harding=3, music_value=0.7)

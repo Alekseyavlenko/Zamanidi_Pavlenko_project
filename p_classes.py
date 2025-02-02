@@ -212,7 +212,7 @@ class PlayerSprite(NormalSprite):  # класс игрока
             self.cicl = 0
             self.update_picture('p0')
 
-    def change_animation(self, passive=False, run=False, loot=False, reverse=0):  # смена анимации (на заготовки)
+    def change_animation(self, passive=False, run=False, loot=False, fight=False, reverse=0):  # смена анимации (на заготовки)
         self.reversing = reverse
         if passive:
             self.pictures = SpritePictures(p0=('Doge_Passive_0.png', 'white'),
@@ -229,6 +229,11 @@ class PlayerSprite(NormalSprite):  # класс игрока
                                            p1=('rebuhank_doge.jpg', -1),
                                            p2=('buhank_doge.jpeg', -1),
                                            p3=('rebuhank_doge.jpg', -1))
+        elif fight:
+            self.pictures = SpritePictures(p0=('Doge_Fight_0.png', 'white'),
+                                           p1=('Doge_Fight_1.png', 'white'),
+                                           p2=('Doge_Fight_2.png', 'white'),
+                                           p3=('Doge_Fight_3.png', 'white'))
         self.pictures.__reversed__(self.reversing)
 
 

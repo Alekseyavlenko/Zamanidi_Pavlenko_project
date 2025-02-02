@@ -35,6 +35,13 @@ def dogge_move(ground):
         print('собакен выпал из мира')
 
 
+def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar):
+    ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(fight=True, reverse=ground.objects[
+        ground.player_pos[0]]
+    [ground.player_pos[
+            1]].reversing)
+
+
 def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healfbar: HealphBar):
     need_to_chek = [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
                     (ground.player_pos[0] - 1, ground.player_pos[1]),
