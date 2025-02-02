@@ -288,7 +288,7 @@ class HealphBar:  # полоска здоровья
             self.health[i].update_rect((i * cell_size) + 1, 1)
         del health
 
-    def __isub__(self, other: int):  # нанесение урона (по задумке, всегда на одно сердечко)
+    def __isub__(self, other: int):  # получение урона (по задумке, сосуд жизни всегда теряет одно сердечко)
         self.zdravie -= 1
         if self.zdravie < len(self.health):
             self.health[self.zdravie].update_picture(1)
@@ -325,32 +325,33 @@ class JawsBar:
                            -100, -100,
                            SpritePictures(n1=('chelust.jpg', -1), n2=('Без имени.png', -1)),
                            (cell_size - 3, cell_size - 3))
-        self.health = [jaw.clone() for _ in range(points)]  # извините, костыль
+        self.jjaws = [jaw.clone() for _ in range(points)]  # извините, костыль
         self.kus = points
         for i in range(points):
-            self.health[i].update_rect(end_coords - (i * cell_size) - cell_size, 1)
+            self.jjaws[i].update_rect(end_coords - (i * cell_size) - cell_size, 1)
         del jaw
 
-    def __iadd__(self, other: int):  # лечение (по задумке, всегда на одно сердце)
-        if self.kus > len(self.health):
+    def __iadd__(self, other: int):  # добавление нового ряда зубов
+        print('собакен находит ряд новых зубов')
+        if self.kus > len(self.jjaws):
             self.kus += 1
-        if self.kus < len(self.health):
-            self.health[self.kus].update_picture(0)
-            self.health[self.kus].scale(self.jaws_bar_board.cell_size - 3,
-                                        self.jaws_bar_board.cell_size - 3)
+        if self.kus < len(self.jjaws):
+            self.jjaws[self.kus].update_picture(0)
+            self.jjaws[self.kus].scale(self.jaws_bar_board.cell_size - 3,
+                                       self.jaws_bar_board.cell_size - 3)
         return self
 
-    def __isub__(self, other: int):  # нанесение урона (по задумке, всегда на одно сердечко)
+    def __isub__(self, other: int):  # нанесение урона врагам (по задумке, расходует одну штуку)
         self.kus -= 1
-        if self.kus < len(self.health):
-            self.health[self.kus].update_picture(1)
-            self.health[self.kus].scale(self.jaws_bar_board.cell_size - 3,
-                                        self.jaws_bar_board.cell_size - 3)
+        if self.kus < len(self.jjaws):
+            self.jjaws[self.kus].update_picture(1)
+            self.jjaws[self.kus].scale(self.jaws_bar_board.cell_size - 3,
+                                       self.jaws_bar_board.cell_size - 3)
         else:
             self.kus = 2
-            self.health[self.kus].update_picture(1)
-            self.health[self.kus].scale(self.jaws_bar_board.cell_size - 3,
-                                        self.jaws_bar_board.cell_size - 3)
+            self.jjaws[self.kus].update_picture(1)
+            self.jjaws[self.kus].scale(self.jaws_bar_board.cell_size - 3,
+                                       self.jaws_bar_board.cell_size - 3)
         return self
 
 

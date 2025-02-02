@@ -23,6 +23,7 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
     health = HealphBar(all_sprites, 6, 21)  # здоровье
     jaws = JawsBar(all_sprites, 3, 21, 550)
     jaws -= 1
+    jaws -= 1
 
     # поле
     ground = Ground(screen, 500, 500, 50)
@@ -57,12 +58,12 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
             if True in pygame.key.get_pressed():
                 if turn:
                     # если нужен индекс кнопки
-                    print(pygame.key.get_pressed().index(True))
+                    # print(pygame.key.get_pressed().index(True))
                     if pygame.key.get_pressed().index(True) in [79, 80, 81, 82]:
                         dogge_move(ground)
                         turn.re_turn()
-                    if pygame.key.get_pressed().index(True) == 225:
-                        dogge_search(ground)
+                    if pygame.key.get_pressed().index(True) == 224:
+                        dogge_search(ground, turn, jaws, health)
                         turn.re_turn()
 
         screen.fill('black')

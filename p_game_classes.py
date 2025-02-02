@@ -3,7 +3,7 @@ import os
 import sys
 from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
-    BulletMonsterSprite, Turns
+    BulletMonsterSprite, Turns, Jaw, JawsBar
 
 
 def dogge_move(ground):
@@ -35,8 +35,21 @@ def dogge_move(ground):
         print('собакен выпал из мира')
 
 
-def dogge_search(ground: Ground):
-    pass
+def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healfbar: HealphBar):
+    need_to_chek = [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
+                    (ground.player_pos[0] - 1, ground.player_pos[1]),
+                    (ground.player_pos[0] - 1, ground.player_pos[1] + 1),
+                    (ground.player_pos[0], ground.player_pos[1] + 1),
+                    (ground.player_pos[0] + 1, ground.player_pos[1] + 1),
+                    (ground.player_pos[0] + 1, ground.player_pos[1]),
+                    (ground.player_pos[0] + 1, ground.player_pos[1] - 1),
+                    (ground.player_pos[0], ground.player_pos[1] - 1)]
+    for i in need_to_chek:
+        if isinstance(ground.objects[i[0]][i[1]], Jaw):
+            del turn.bodies[turn.bodies.index([ground.objects[i[0]][i[1]], i])]
+            ground.objects[i[0]][i[1]].kill()
+            ground.objects[i[0]][i[1]] = None
+            jawsbar += 1
 
 
 def turning(ground: Ground, turn: Turns, health: HealphBar):
