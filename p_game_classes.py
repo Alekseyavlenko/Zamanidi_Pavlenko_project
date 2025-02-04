@@ -96,7 +96,7 @@ def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healphbar: Healp
     ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(loot=True)
 
 
-def turning(ground: Ground, turn: Turns, health: HealphBar):
+def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
     player_pos = ground.player_pos
     for i in range(len(turn.bodies)):
         if isinstance(turn.bodies[i][0], BulletMonsterSprite):
@@ -109,7 +109,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
                 c2 = 1
             elif turn.bodies[i][1][1] + 1 == len(ground.objects) - 6:
                 c2 = -1
-            if not c1 and not c2:
+            if not c1 and not c2 and harding != 1:
                 if not ground.objects[turn.bodies[i][1][0] + 0][turn.bodies[i][1][1] + 1]:
                     ground.add_object(
                         BulletSprite(ground.objects_sprites, ground.board.cell_size * (turn.bodies[i][1][0] + 0),
@@ -176,11 +176,29 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
 
     if not turn.jaws_check():
         need_to_spawn_jaws = [(1, 1),
-                              (1, len(ground.objects[1]) - 6),
-                              (len(ground.objects) - 6, len(ground.objects[1]) - 6),
-                              (len(ground.objects) - 6, 1)]
-        print(need_to_spawn_jaws)
+                              (1, len(ground.objects[1]) - 7),
+                              (len(ground.objects) - 7, len(ground.objects[1]) - 7),
+                              (len(ground.objects) - 7, 1)]
+        for _ in range(len(need_to_spawn_jaws)):
+            i = choice(need_to_spawn_jaws)
+            if not ground.objects[i[0]][i[1]] and not turn.jaws_check():
+                ground.add_object(
+                    Jaw(ground.objects_sprites, ground.board.cell_size * i[0], ground.board.cell_size * i[1],
+                        (ground.board.cell_size, ground.board.cell_size)), i)
+                turn.add_object(ground, i)
+    if not turn.heal_check():
+        need_to_spawn_heal = [(1, 1),
+                              (1, len(ground.objects[1]) - 7),
+                              (len(ground.objects) - 7, len(ground.objects[1]) - 7),
+                              (len(ground.objects) - 7, 1)]
+        for _ in range(len(need_to_spawn_heal)):
+            i = choice(need_to_spawn_heal)
+            if not ground.objects[i[0]][i[1]] and not turn.heal_check() and harding != 3:
+                ground.add_object(
+                    Heal(ground.objects_sprites, ground.board.cell_size * i[0], ground.board.cell_size * i[1],
+                         (ground.board.cell_size, ground.board.cell_size)), i)
+                turn.add_object(ground, i)
 
     turn.re_turn()
-# ground.move_object(turn.bodies[0][1], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
-# turn.bodies[0] = (turn.bodies[0][0], (turn.bodies[0][1][0] + 1, turn.bodies[0][1][1]))
+
+# def dead_screen(screen, size):
