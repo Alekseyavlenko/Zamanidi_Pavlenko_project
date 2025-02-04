@@ -176,9 +176,9 @@ def turning(ground: Ground, turn: Turns, health: HealphBar):
 
     if not turn.jaws_check():
         need_to_spawn_jaws = [(1, 1),
-                              (1, len(ground.board.board[1]) - 1),
-                              (len(ground.board.board) - 1, len(ground.board.board[1]) - 1),
-                              (len(ground.board.board) - 1, 1)]
+                              (1, len(ground.objects[1]) - 6),
+                              (len(ground.objects) - 6, len(ground.objects[1]) - 6),
+                              (len(ground.objects) - 6, 1)]
         print(need_to_spawn_jaws)
 
     turn.re_turn()
