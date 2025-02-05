@@ -186,18 +186,40 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                     Jaw(ground.objects_sprites, ground.board.cell_size * i[0], ground.board.cell_size * i[1],
                         (ground.board.cell_size, ground.board.cell_size)), i)
                 turn.add_object(ground, i)
-    if not turn.heal_check():
+    if not turn.heal_check() and harding != 3:
         need_to_spawn_heal = [(1, 1),
                               (1, len(ground.objects[1]) - 7),
                               (len(ground.objects) - 7, len(ground.objects[1]) - 7),
                               (len(ground.objects) - 7, 1)]
         for _ in range(len(need_to_spawn_heal)):
             i = choice(need_to_spawn_heal)
-            if not ground.objects[i[0]][i[1]] and not turn.heal_check() and harding != 3:
+            if not ground.objects[i[0]][i[1]] and not turn.heal_check():
                 ground.add_object(
                     Heal(ground.objects_sprites, ground.board.cell_size * i[0], ground.board.cell_size * i[1],
                          (ground.board.cell_size, ground.board.cell_size)), i)
                 turn.add_object(ground, i)
+
+    if not turn.bullet_and_bulletmonster_chek()[1]:
+        can_be_use_to_spawn = []
+        if harding == 1:
+            for i in range(2, len(ground.objects[1]) - 8):
+                for g in range(2, len(ground.objects) - 8):
+                    if not ground.objects[i][g] and (i, g) not in [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
+                                                                   (ground.player_pos[0] - 1, ground.player_pos[1]),
+                                                                   (ground.player_pos[0] - 1, ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0], ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1]),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1] - 1),
+                                                                   (ground.player_pos[0], ground.player_pos[1] - 1),
+                                                                   (player_pos[0], player_pos[1])]:
+                        can_be_use_to_spawn.append((i, g))
+        can_be_use_to_spawn = choice(can_be_use_to_spawn)
+        ground.add_object(
+            BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * can_be_use_to_spawn[0],
+                                ground.board.cell_size * can_be_use_to_spawn[1],
+                                (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn)
+        turn.add_object(ground, can_be_use_to_spawn)
 
     turn.re_turn()
 

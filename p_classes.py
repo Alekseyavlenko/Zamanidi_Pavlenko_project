@@ -498,7 +498,7 @@ class Turns:  # жизнь - игра, но игра по партиям
 
     def deep_init(self, ground, *args: (int, int)):  # сканированье на всякий погожий иль день черней некуда
         for i in args:
-            self.bodies.append([ground.objects[i[0]][i[1]], i])
+            self.bodies.append((ground.objects[i[0]][i[1]], i))
 
     def add_object(self, ground, pos: (int, int)):  # добавка надбавки на голову собакевича
         if ground.objects[pos[0]][pos[1]]:
@@ -525,6 +525,16 @@ class Turns:  # жизнь - игра, но игра по партиям
             if isinstance(i[0], Heal):
                 return True
         return None
+
+    def bullet_and_bulletmonster_chek(self):
+        bullets = 0
+        monsterbullets = 0
+        for i in self.bodies:
+            if isinstance(i[0], BulletSprite):
+                bullets += 1
+            if isinstance(i[0], BulletMonsterSprite):
+                monsterbullets += 1
+        return bullets, monsterbullets
 
     def __getitem__(self, item):  # индекс чтоб старший брат властовал семи
         return self.bodies[item]
