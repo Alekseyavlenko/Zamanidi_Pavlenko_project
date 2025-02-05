@@ -370,26 +370,25 @@ class JawsBar:
 
     def __iadd__(self, other: int):  # добавление нового ряда зубов
         print('собакен находит ряд новых зубов')
-        if self.kus > len(self.jjaws):
-            self.kus += 1
         if self.kus < len(self.jjaws):
+            self.kus += 1
+        if self.kus > len(self.jjaws):
+            self.kus = 3
             self.jjaws[self.kus].update_picture(0)
             self.jjaws[self.kus].scale(self.jaws_bar_board.cell_size - 3,
                                        self.jaws_bar_board.cell_size - 3)
+        print(self.kus)
         return self
 
     def __isub__(self, other: int):  # нанесение урона врагам (по задумке, расходует одну штуку)
-        self.kus -= 1
-        if self.kus < len(self.jjaws):
-            self.jjaws[self.kus].update_picture(1)
-            self.jjaws[self.kus].scale(self.jaws_bar_board.cell_size - 3,
-                                       self.jaws_bar_board.cell_size - 3)
-        else:
-            self.kus = 2
-            self.jjaws[self.kus].update_picture(1)
-            self.jjaws[self.kus].scale(self.jaws_bar_board.cell_size - 3,
-                                       self.jaws_bar_board.cell_size - 3)
+        self.kus -= 1 if self.kus != 0 else 0
+        self.jjaws[self.kus].update_picture(1)
+        self.jjaws[self.kus].scale(self.jaws_bar_board.cell_size - 3,
+                                   self.jaws_bar_board.cell_size - 3)
+
+        print(self.kus)
         return self
+
 
     def is_exists_or_not_exists(self):  # проверка на умерщвлённость
         if self.kus <= 0:

@@ -49,7 +49,7 @@ def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar, healph: HealphBar
         hp = 0
         for i in need_to_fight:
             if isinstance(ground.objects[i[0]][i[1]], BulletSprite):
-                del turn.bodies[turn.bodies.index([ground.objects[i[0]][i[1]], i])]
+                del turn.bodies[turn.bodies.index((ground.objects[i[0]][i[1]], i))]
                 ground.objects[i[0]][i[1]].kill()
                 ground.objects[i[0]][i[1]] = None
                 hp += 1
@@ -64,6 +64,8 @@ def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar, healph: HealphBar
 
     else:
         print('у собакена нет челюстей для атаки!')
+        if hard == 3:
+            turn.re_turn()
     jawsbar -= 1
     ground.objects[ground.player_pos[0]][ground.player_pos[1]].change_animation(fight=True, reverse=ground.objects[
         ground.player_pos[0]]
@@ -109,7 +111,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                 c2 = 1
             elif turn.bodies[i][1][1] + 1 == len(ground.objects) - 6:
                 c2 = -1
-            if not c1 and not c2 and harding != 1:
+            if not c1 and not c2 and harding != 1 and turn.bullet_and_bulletmonster_chek()[0] < 4:
                 if not ground.objects[turn.bodies[i][1][0] + 0][turn.bodies[i][1][1] + 1]:
                     ground.add_object(
                         BulletSprite(ground.objects_sprites, ground.board.cell_size * (turn.bodies[i][1][0] + 0),
@@ -124,6 +126,14 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                 turn.bodies[i] = (turn.bodies[i][0],
                                   (turn.bodies[i][1][0] + c1,
                                    turn.bodies[i][1][1] + c2))
+                if harding == 3 and turn.bullet_and_bulletmonster_chek()[0] <= 10:
+                    if not ground.objects[turn.bodies[i][1][0] + 0][turn.bodies[i][1][1] + 1]:
+                        ground.add_object(
+                            BulletSprite(ground.objects_sprites, ground.board.cell_size * (turn.bodies[i][1][0] + 0),
+                                         ground.board.cell_size * (turn.bodies[i][1][1] + 1),
+                                         (ground.board.cell_size, ground.board.cell_size)),
+                            (turn.bodies[i][1][0] + 0, turn.bodies[i][1][1] + 1))
+                        turn.add_object(ground, (turn.bodies[i][1][0] + 0, turn.bodies[i][1][1] + 1))
             elif isinstance(ground.objects[turn.bodies[i][1][0] + c1][turn.bodies[i][1][1] + c2], PlayerSprite):
                 print('BulletMonster врезался в собакена!')
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].kill()
@@ -214,13 +224,73 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                                                                    (ground.player_pos[0], ground.player_pos[1] - 1),
                                                                    (player_pos[0], player_pos[1])]:
                         can_be_use_to_spawn.append((i, g))
-        can_be_use_to_spawn = choice(can_be_use_to_spawn)
-        ground.add_object(
-            BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * can_be_use_to_spawn[0],
-                                ground.board.cell_size * can_be_use_to_spawn[1],
-                                (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn)
-        turn.add_object(ground, can_be_use_to_spawn)
-
+            can_be_use_to_spawn = choice(can_be_use_to_spawn)
+            ground.add_object(
+                BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * can_be_use_to_spawn[0],
+                                    ground.board.cell_size * can_be_use_to_spawn[1],
+                                    (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn)
+            turn.add_object(ground, can_be_use_to_spawn)
+        if harding == 2:
+            for i in range(2, len(ground.objects[1]) - 8):
+                for g in range(2, len(ground.objects) - 8):
+                    if not ground.objects[i][g] and (i, g) not in [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
+                                                                   (ground.player_pos[0] - 1, ground.player_pos[1]),
+                                                                   (ground.player_pos[0] - 1, ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0], ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1]),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1] - 1),
+                                                                   (ground.player_pos[0], ground.player_pos[1] - 1),
+                                                                   (player_pos[0], player_pos[1])]:
+                        can_be_use_to_spawn.append((i, g))
+            c1 = choice(can_be_use_to_spawn)
+            del can_be_use_to_spawn[can_be_use_to_spawn.index(c1)]
+            c2 = choice(can_be_use_to_spawn)
+            can_be_use_to_spawn = c1, c2
+            ground.add_object(
+                BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * can_be_use_to_spawn[0][0],
+                                    ground.board.cell_size * can_be_use_to_spawn[0][1],
+                                    (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn[0])
+            turn.add_object(ground, can_be_use_to_spawn[0])
+            ground.add_object(
+                BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * can_be_use_to_spawn[1][0],
+                                    ground.board.cell_size * can_be_use_to_spawn[1][1],
+                                    (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn[1])
+            turn.add_object(ground, can_be_use_to_spawn[1])
+        if harding == 3:
+            for i in range(2, len(ground.objects[1]) - 8):
+                for g in range(2, len(ground.objects) - 8):
+                    if not ground.objects[i][g] and (i, g) not in [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
+                                                                   (ground.player_pos[0] - 1, ground.player_pos[1]),
+                                                                   (ground.player_pos[0] - 1, ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0], ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1] + 1),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1]),
+                                                                   (ground.player_pos[0] + 1, ground.player_pos[1] - 1),
+                                                                   (ground.player_pos[0], ground.player_pos[1] - 1),
+                                                                   (player_pos[0], player_pos[1])]:
+                        can_be_use_to_spawn.append((i, g))
+            c1 = choice(can_be_use_to_spawn)
+            del can_be_use_to_spawn[can_be_use_to_spawn.index(c1)]
+            c2 = choice(can_be_use_to_spawn)
+            del can_be_use_to_spawn[can_be_use_to_spawn.index(c2)]
+            c3 = choice(can_be_use_to_spawn)
+            can_be_use_to_spawn = c1, c2, c3
+            ground.add_object(
+                BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * can_be_use_to_spawn[0][0],
+                                    ground.board.cell_size * can_be_use_to_spawn[0][1],
+                                    (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn[0])
+            turn.add_object(ground, can_be_use_to_spawn[0])
+            ground.add_object(
+                BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * can_be_use_to_spawn[1][0],
+                                    ground.board.cell_size * can_be_use_to_spawn[1][1],
+                                    (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn[1])
+            turn.add_object(ground, can_be_use_to_spawn[1])
+            ground.add_object(
+                BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * can_be_use_to_spawn[2][0],
+                                    ground.board.cell_size * can_be_use_to_spawn[2][1],
+                                    (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn[2])
+            turn.add_object(ground, can_be_use_to_spawn[2])
     turn.re_turn()
 
 # def dead_screen(screen, size):

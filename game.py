@@ -26,6 +26,7 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
     # поле
     ground = Ground(screen, 500, 500, 50)
     ground.deep_init((5, 5))
+    turn = Turns()
     if harding == 1:
         ground.add_object(
             BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 2, ground.board.cell_size * 2,
@@ -34,13 +35,29 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
                               (ground.board.cell_size, ground.board.cell_size)), (9, 1))
         ground.add_object(Heal(ground.objects_sprites, ground.board.cell_size * 1, ground.board.cell_size * 1,
                                (ground.board.cell_size, ground.board.cell_size)), (1, 1))
-        turn = Turns()
         turn.deep_init(ground, (2, 2), (1, 1), (9, 1))
-
     elif harding == 2:
-        pass
+        ground.add_object(
+            BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 2, ground.board.cell_size * 2,
+                                (ground.board.cell_size, ground.board.cell_size)), (2, 2))
+        ground.add_object(Jaw(ground.objects_sprites, ground.board.cell_size * 9, ground.board.cell_size * 1,
+                              (ground.board.cell_size, ground.board.cell_size)), (9, 1))
+        ground.add_object(Heal(ground.objects_sprites, ground.board.cell_size * 1, ground.board.cell_size * 1,
+                               (ground.board.cell_size, ground.board.cell_size)), (1, 1))
+        ground.add_object(
+            BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 2, ground.board.cell_size * 8,
+                                (ground.board.cell_size, ground.board.cell_size)), (2, 8))
+        turn.deep_init(ground, (2, 2), (1, 1), (9, 1), (2, 8))
     elif harding == 3:
-        pass
+        ground.add_object(
+            BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 2, ground.board.cell_size * 2,
+                                (ground.board.cell_size, ground.board.cell_size)), (2, 2))
+        ground.add_object(Jaw(ground.objects_sprites, ground.board.cell_size * 9, ground.board.cell_size * 1,
+                              (ground.board.cell_size, ground.board.cell_size)), (9, 1))
+        ground.add_object(
+            BulletMonsterSprite(ground.objects_sprites, ground.board.cell_size * 2, ground.board.cell_size * 8,
+                                (ground.board.cell_size, ground.board.cell_size)), (2, 8))
+        turn.deep_init(ground, (2, 2), (9, 1), (2, 8))
     all_sprites.draw(screen)
 
     if harding == 1 or harding == 2:
@@ -79,6 +96,8 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
         if not turn:
             turning(ground, turn, health, harding)
         all_sprites.draw(screen)
+        if not health.is_dead_or_alive():
+            running = False
         pygame.display.flip()
         pygame.time.Clock().tick(200)
 
@@ -86,4 +105,4 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 # def main():
 
 if __name__ == '__main__':
-    game_sobstvenno(harding=1, music_value=0.0)
+    game_sobstvenno(harding=3, music_value=0.0)
