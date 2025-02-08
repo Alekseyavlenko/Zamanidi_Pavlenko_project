@@ -2,6 +2,8 @@ import sys
 
 import pygame
 
+import game
+
 
 # Главная функция, которая запускает меню игры
 def main_menu(achievements, language):
@@ -199,7 +201,9 @@ def main_menu(achievements, language):
                     if button_rect.collidepoint(event.pos):
                         if i == 0:  # Кнопка "Начать игру"
                             music_volume = pygame.mixer.music.get_volume()  # Получаем текущую громкость
-                            game_sobstvenno(harding=difficulty_level + 1, music_value=music_volume)
+                            game.game_sobstvenno(harding=difficulty_level + 1, music_value=music_volume)
+                            pygame.quit()
+                            sys.exit()
                         elif i == 1:
                             show_settings()
                         elif i == 2:
@@ -212,6 +216,6 @@ def main_menu(achievements, language):
 
 # Запуск программы с начальными достижениями
 if __name__ == "__main__":
-    achievements = {'ach_1': False, 'ach_2': False, 'ach_3': False}  
+    achievements = {'ach_1': False, 'ach_2': False, 'ach_3': False}
     language = "ru"
     main_menu(achievements, language)

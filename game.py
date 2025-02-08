@@ -7,7 +7,7 @@ from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
     BulletMonsterSprite, Turns, Jaw, JawsBar, Heal
 from p_game_classes import dogge_move, turning, dogge_search, dagge_fight
-from menu import main_menu
+import menu
 
 
 def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
@@ -70,7 +70,8 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 ground.get_click(event.pos)
             if True in pygame.key.get_pressed():
@@ -98,7 +99,7 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
             turning(ground, turn, health, harding)
         all_sprites.draw(screen)
         if not health.is_dead_or_alive():
-            main_menu({'ach_1': False, 'ach_2': False, 'ach_3': False}, "ru")
+            menu.main_menu({'ach_1': False, 'ach_2': False, 'ach_3': False}, "ru")
         pygame.display.flip()
         pygame.time.Clock().tick(200)
 
