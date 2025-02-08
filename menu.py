@@ -1,4 +1,5 @@
 import sys
+
 import pygame
 
 
@@ -196,14 +197,13 @@ def main_menu(achievements, language):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for i, (_, button_rect) in enumerate(button_rects):
                     if button_rect.collidepoint(event.pos):
-                        if i == 1:
-                            show_settings()  # Открытие настроек
+                        if i == 0:  # Кнопка "Начать игру"
+                            music_volume = pygame.mixer.music.get_volume()  # Получаем текущую громкость
+                            game_sobstvenno(harding=difficulty_level + 1, music_value=music_volume)
+                        elif i == 1:
+                            show_settings()
                         elif i == 2:
-                            show_achievements()  # Открытие достижений
-                        elif i == 0:
-                            # Начать игру с выбранным уровнем сложности
-                            print(f"Starting game with difficulty: {difficulty_level}")
-                            # запуск основного игрового цикла с нужным уровнем сложности
+                            show_achievements()
                         elif i == 3:
                             pygame.quit()
                             sys.exit()
@@ -212,6 +212,6 @@ def main_menu(achievements, language):
 
 # Запуск программы с начальными достижениями
 if __name__ == "__main__":
-    achievements = {'ach_1': False, 'ach_2': False, 'ach_3': False}  # Пример начальных достижений
+    achievements = {'ach_1': False, 'ach_2': False, 'ach_3': False}  
     language = "ru"
     main_menu(achievements, language)
