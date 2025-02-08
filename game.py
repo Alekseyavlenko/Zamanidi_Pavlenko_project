@@ -7,6 +7,7 @@ from random import choice
 from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
     BulletMonsterSprite, Turns, Jaw, JawsBar, Heal
 from p_game_classes import dogge_move, turning, dogge_search, dagge_fight
+from menu import main_menu
 
 
 def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
@@ -97,7 +98,7 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
             turning(ground, turn, health, harding)
         all_sprites.draw(screen)
         if not health.is_dead_or_alive():
-            running = False
+            main_menu({'ach_1': False, 'ach_2': False, 'ach_3': False}, "ru")
         pygame.display.flip()
         pygame.time.Clock().tick(200)
 
@@ -105,4 +106,4 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 # def main():
 
 if __name__ == '__main__':
-    game_sobstvenno(harding=3, music_value=0.0)
+    game_sobstvenno(harding=2, music_value=0.0)
