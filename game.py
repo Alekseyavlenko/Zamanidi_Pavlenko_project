@@ -99,7 +99,7 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
             turning(ground, turn, health, harding)
         all_sprites.draw(screen)
         if not health.is_dead_or_alive():
-            menu.main_menu({'ach_1': False, 'ach_2': False, 'ach_3': False}, "ru")
+            menu.main_menu({'ach_1': True, 'ach_2': True, 'ach_3': True}, "ru")
         pygame.display.flip()
         pygame.time.Clock().tick(200)
 
@@ -107,4 +107,4 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 # def main():
 
 if __name__ == '__main__':
-    game_sobstvenno(harding=2, music_value=0.0)
+    game_sobstvenno(harding=1, music_value=0.0)
