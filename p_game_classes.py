@@ -1,12 +1,10 @@
 import pygame
-import os
-import sys
 from random import choice
-from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
+from p_classes import HealphBar, Ground, PlayerSprite, BulletSprite, \
     BulletMonsterSprite, Turns, Jaw, JawsBar, Heal
 
 
-def dogge_move(ground):
+def dogge_move(ground):  # движение собакена
     if pygame.key.get_pressed().index(True) == 79:
         ground.move_object((ground.player_pos[0], ground.player_pos[1]),
                            (ground.player_pos[0] + 1, ground.player_pos[1]),
@@ -36,6 +34,7 @@ def dogge_move(ground):
 
 
 def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar, healph: HealphBar, hard: int):
+    # атака собакена
     need_to_fight = [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
                      (ground.player_pos[0] - 1, ground.player_pos[1]),
                      (ground.player_pos[0] - 1, ground.player_pos[1] + 1),
@@ -61,7 +60,6 @@ def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar, healph: HealphBar
         if hp:
             if hard == 1:
                 healph += 1
-
     else:
         print('у собакена нет челюстей для атаки!')
         if hard == 3:
@@ -74,6 +72,7 @@ def dagge_fight(ground: Ground, turn: Turns, jawsbar: JawsBar, healph: HealphBar
 
 
 def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healphbar: HealphBar, hard):
+    # поиск предметов собакеном
     need_to_chek = [(ground.player_pos[0] - 1, ground.player_pos[1] - 1),
                     (ground.player_pos[0] - 1, ground.player_pos[1]),
                     (ground.player_pos[0] - 1, ground.player_pos[1] + 1),
@@ -99,9 +98,11 @@ def dogge_search(ground: Ground, turn: Turns, jawsbar: JawsBar, healphbar: Healp
 
 
 def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
+    # ход противников
     player_pos = ground.player_pos
-    for i in range(len(turn.bodies)):
+    for i in range(len(turn.bodies)):  # движение противников
         if isinstance(turn.bodies[i][0], BulletMonsterSprite):
+            # интелект для BulletMonster
             c1, c2 = choice([-1, 0, 1]), choice([-1, 0, 1])
             if turn.bodies[i][1][0] == 0:
                 c1 = 1
@@ -112,6 +113,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
             elif turn.bodies[i][1][1] + 1 == len(ground.objects) - 6:
                 c2 = -1
             if not c1 and not c2 and harding != 1 and turn.bullet_and_bulletmonster_chek()[0] < 4:
+                # если BulletMonster не ходит, он спавнит Bullet (кроме первой сложности)
                 if not ground.objects[turn.bodies[i][1][0] + 0][turn.bodies[i][1][1] + 1]:
                     ground.add_object(
                         BulletSprite(ground.objects_sprites, ground.board.cell_size * (turn.bodies[i][1][0] + 0),
@@ -127,6 +129,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                                   (turn.bodies[i][1][0] + c1,
                                    turn.bodies[i][1][1] + c2))
                 if harding == 3 and turn.bullet_and_bulletmonster_chek()[0] <= 10:
+                    # на третьей сложности происходит вот очень быстрое размножение (до лимита):
                     if not ground.objects[turn.bodies[i][1][0] + 0][turn.bodies[i][1][1] + 1]:
                         ground.add_object(
                             BulletSprite(ground.objects_sprites, ground.board.cell_size * (turn.bodies[i][1][0] + 0),
@@ -135,7 +138,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                             (turn.bodies[i][1][0] + 0, turn.bodies[i][1][1] + 1))
                         turn.add_object(ground, (turn.bodies[i][1][0] + 0, turn.bodies[i][1][1] + 1))
             elif isinstance(ground.objects[turn.bodies[i][1][0] + c1][turn.bodies[i][1][1] + c2], PlayerSprite):
-                print('BulletMonster врезался в собакена!')
+                print('BulletMonster врезался в собакена!')  # я думаю, тут понятно  когда что зачем
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].kill()
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]] = None
                 turn.bodies[i] = (None,
@@ -148,6 +151,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                                                                                             [ground.player_pos[
                                                                                                     1]].reversing)
         elif isinstance(turn.bodies[i][0], BulletSprite):
+            # интелект для Bullet
             what_it_do_in_this_turn = (0, 0)
             if turn.bodies[i][1][0] == player_pos[0] or turn.bodies[i][1][1] == player_pos[1]:
                 if turn.bodies[i][1][0] == player_pos[0]:
@@ -168,7 +172,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                                   (turn.bodies[i][1][0] + c1,
                                    turn.bodies[i][1][1] + c2))
             elif isinstance(ground.objects[turn.bodies[i][1][0] + c1][turn.bodies[i][1][1] + c2], PlayerSprite):
-                print('Bullet врезался в собакена!')
+                print('Bullet врезался в собакена!')  # самоуничтожение
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]].kill()
                 ground.objects[turn.bodies[i][1][0]][turn.bodies[i][1][1]] = None
                 turn.bodies[i] = (None,
@@ -180,11 +184,11 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                                                                                                 ground.player_pos[0]]
                                                                                             [ground.player_pos[
                                                                                                     1]].reversing)
-    for i in turn.bodies:
+    for i in turn.bodies:  # костыль, по другому у меня не получилось в такой системе убирать объекты
         if not i[0]:
             del turn.bodies[turn.bodies.index(i)]
 
-    if not turn.jaws_check():
+    if not turn.jaws_check():  # спавн челюстей в конкретных точках
         need_to_spawn_jaws = [(1, 1),
                               (1, len(ground.objects[1]) - 7),
                               (len(ground.objects) - 7, len(ground.objects[1]) - 7),
@@ -196,7 +200,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                     Jaw(ground.objects_sprites, ground.board.cell_size * i[0], ground.board.cell_size * i[1],
                         (ground.board.cell_size, ground.board.cell_size)), i)
                 turn.add_object(ground, i)
-    if not turn.heal_check() and harding != 3:
+    if not turn.heal_check() and harding != 3:  # спавн сердец в конкретных точках
         need_to_spawn_heal = [(1, 1),
                               (1, len(ground.objects[1]) - 7),
                               (len(ground.objects) - 7, len(ground.objects[1]) - 7),
@@ -209,7 +213,7 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                          (ground.board.cell_size, ground.board.cell_size)), i)
                 turn.add_object(ground, i)
 
-    if not turn.bullet_and_bulletmonster_chek()[1]:
+    if not turn.bullet_and_bulletmonster_chek()[1]:  # спавн противников
         can_be_use_to_spawn = []
         if harding == 1:
             for i in range(2, len(ground.objects[1]) - 8):
@@ -292,5 +296,3 @@ def turning(ground: Ground, turn: Turns, health: HealphBar, harding):
                                     (ground.board.cell_size, ground.board.cell_size)), can_be_use_to_spawn[2])
             turn.add_object(ground, can_be_use_to_spawn[2])
     turn.re_turn()
-
-# def dead_screen(screen, size):
