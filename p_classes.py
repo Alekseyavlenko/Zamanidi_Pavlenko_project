@@ -389,7 +389,6 @@ class JawsBar:
         print(self.kus)
         return self
 
-
     def is_exists_or_not_exists(self):  # проверка на умерщвлённость
         if self.kus <= 0:
             return False
@@ -398,16 +397,16 @@ class JawsBar:
 
 class Ground:  # класс поля всех действ
     def __init__(self, screen, width, heigth, cell_size):  # сотворение мира
-        self.screen = screen  # знание места отображения
-        self.board = Board(width, heigth, 0, 0, cell_size)  # для хранения всяких чисел важных и необходимых
+        self.screen = screen  # место отображения
+        self.board = Board(width, heigth, 0, 0, cell_size)
         self.tiles = [[None] * ((width // cell_size) + 1) for _ in range(heigth // cell_size + 1)]  # скины квадратиков
         self.objects = [[None] * ((width // cell_size) + 6) for _ in range(heigth // cell_size + 6)]  # спрайты
-        self.sprites = pygame.sprite.Group()  # группа спрайтов для скинов дракватиков
-        self.objects_sprites = pygame.sprite.Group()  # группа спрайтов для объектов и субъектов
-        self.player_pos = None  # заготовка для пришествия на свет машинно-божий великого собакена
+        self.sprites = pygame.sprite.Group()  # группа спрайтов для скинов квадратиков
+        self.objects_sprites = pygame.sprite.Group()  # группа спрайтов для объектов
+        self.player_pos = None
 
-    def deep_init(self, player_pos: (int, int)):  # сотворение сути мироздания
-        self.player_pos = player_pos  # координаты сего представителя собачьего рода
+    def deep_init(self, player_pos: (int, int)):  # дополнительно разбил инициализацию на две части
+        self.player_pos = player_pos  # координаты перса
         self.add_object(PlayerSprite(self.objects_sprites, self.board.cell_size * player_pos[0],
                                      self.board.cell_size * player_pos[1],
                                      (self.board.cell_size, self.board.cell_size)),
@@ -417,10 +416,10 @@ class Ground:  # класс поля всех действ
                 self.assign_sprite(SpritePictures(n1=choice(['Grass-300x300.jpg'])), (i, g))  # обувание квадратов
 
     def render(self):  # отрисование
-        self.board.render(self.screen)  # на всякий пожарский доска рисуется
-        self.sprites.draw(self.screen)  # на обязательный пожарский кожурки квадратов отображаются
+        self.board.render(self.screen)  # если у квадратов не будет скинов, мы увидим клетки а не чёрный экран
+        self.sprites.draw(self.screen)  # скины квадратов отображаются
         self.objects[self.player_pos[0]][self.player_pos[1]].cicle_animation()  # собакен в цикле
-        self.objects_sprites.draw(self.screen)  # все действа, сущности, тонкости летят в сетчатку глаза
+        self.objects_sprites.draw(self.screen)
 
     def get_click(self, mouse_pos):  # курс курсора на позицию мышления мыши
         mouse_position = self.board.get_click(mouse_pos)
@@ -428,7 +427,7 @@ class Ground:  # класс поля всех действ
         print(mouse_position, object_in_position)
         return mouse_position, object_in_position
 
-    def add_object(self, objject: NormalSprite | None, pos: (int, int)):  # рождение новой бездушности
+    def add_object(self, objject: NormalSprite | None, pos: (int, int)):  # добавление объекта
         self.objects[pos[0]][pos[1]] = objject
 
     def assign_sprite(self, pictures: SpritePictures, pos: (int, int), offset=(0, 0)):  # перебувание квадратика
@@ -456,7 +455,7 @@ class Ground:  # класс поля всех действ
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
             elif pos_end[0] > len(self.board.board[0]) // self.board.cell_size:  # мир бубличен
-                if not self.objects[0][self.player_pos[1]]:  # не пойдёт собакен в лапы смерти
+                if not self.objects[0][self.player_pos[1]]:
                     pos_end = (0, self.player_pos[1])
                     self.player_pos = (0, self.player_pos[1])
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
@@ -472,7 +471,7 @@ class Ground:  # класс поля всех действ
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
             elif pos_end[1] > len(self.board.board[1]) // self.board.cell_size:  # мир бубличен
-                if not self.objects[pos_end[0]][0]:  # не пойдёт собакен в лапы смерти
+                if not self.objects[pos_end[0]][0]:
                     pos_end = (self.player_pos[0], 0)
                     self.player_pos = (self.player_pos[0], 0)
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
@@ -480,7 +479,7 @@ class Ground:  # класс поля всех действ
                     self.objects[pos_start[0]][pos_start[1]], self.objects[pos_end[0]][pos_end[1]] = None, \
                         self.objects[pos_start[0]][pos_start[1]]
             elif not self.objects[pos_end[0]][pos_end[1]]:  # мир... мир пластичен
-                if not self.objects[pos_end[0]][pos_end[1]]:  # не пойдёт собакен в лапы смерти
+                if not self.objects[pos_end[0]][pos_end[1]]:
                     self.player_pos = pos_end
                     self.objects[pos_start[0]][pos_start[1]].update_rect(pos_end[0] * self.board.cell_size,
                                                                          pos_end[1] * self.board.cell_size)
@@ -489,17 +488,17 @@ class Ground:  # класс поля всех действ
                 print(self.player_pos)
 
 
-class Turns:  # жизнь - игра, но игра по партиям
+class Turns:  # для хранения информации о ходах, позициях объектов
     def __init__(self):
         self.count = 0.0
-        self.turn = True  # собакен не бел, не чист, но ходит первее
-        self.bodies = []  # другие не негры, но тьма, и ходят вторее
+        self.turn = True
+        self.bodies = []
 
-    def deep_init(self, ground, *args: (int, int)):  # сканированье на всякий погожий иль день черней некуда
+    def deep_init(self, ground, *args: (int, int)):
         for i in args:
             self.bodies.append((ground.objects[i[0]][i[1]], i))
 
-    def add_object(self, ground, pos: (int, int)):  # добавка надбавки на голову собакевича
+    def add_object(self, ground, pos: (int, int)):  # добавление объекта
         if ground.objects[pos[0]][pos[1]]:
             self.bodies.append((ground.objects[pos[0]][pos[1]], pos))
 
@@ -507,25 +506,25 @@ class Turns:  # жизнь - игра, но игра по партиям
         self.count += 0.5
         return self.turn
 
-    def re_turn(self):  # не смеет сварожец преступить часов ход
+    def re_turn(self):
         self.turn = True if not self.turn else False
 
     def intellectual_move(self):  # чтоб собакам отрадные не походили на глуповцев
         pass
 
-    def jaws_check(self):
+    def jaws_check(self):  # проверка на наличие челюстей на поле
         for i in self.bodies:
             if isinstance(i[0], Jaw):
                 return True
         return None
 
-    def heal_check(self):
+    def heal_check(self):  # проверка на наличие сердец на поле
         for i in self.bodies:
             if isinstance(i[0], Heal):
                 return True
         return None
 
-    def bullet_and_bulletmonster_chek(self):
+    def bullet_and_bulletmonster_chek(self):  # возвращает количество противников
         bullets = 0
         monsterbullets = 0
         for i in self.bodies:
@@ -535,5 +534,5 @@ class Turns:  # жизнь - игра, но игра по партиям
                 monsterbullets += 1
         return bullets, monsterbullets
 
-    def __getitem__(self, item):  # индекс чтоб старший брат властовал семи
+    def __getitem__(self, item):  # объект по ключу
         return self.bodies[item]

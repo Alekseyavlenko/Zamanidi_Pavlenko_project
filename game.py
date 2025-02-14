@@ -124,7 +124,7 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
                 # переход в начальное меню
                 menu.main_menu({'ach_1': True, 'ach_2': True, 'ach_3': True}, "ru")
             except Exception as hhh:
-                print('Вы наткнулись на', hhh)
+                menu.main_menu({'ach_1': True, 'ach_2': True, 'ach_3': True}, "ru")
             pygame.quit()
             sys.exit()
 
@@ -135,6 +135,6 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
 
 if __name__ == '__main__':
     try:
-        game_sobstvenno(harding=1, music_value=0.0)
+        game_sobstvenno(harding=3, music_value=0.0)
     except Exception as e:
         print('Вы наткнулись на', e)
