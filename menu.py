@@ -203,8 +203,8 @@ def main_menu(achievements, language):
                             music_volume = pygame.mixer.music.get_volume()  # Получаем текущую громкость
                             try:
                                 game.game_sobstvenno(harding=difficulty_level + 1, music_value=music_volume)
-                            except Exception as e:
-                                print('Вы наткнулись на', e)
+                            except Exception as io:
+                                print('Вы наткнулись на', io)
                             pygame.quit()
                             sys.exit()
                         elif i == 1:
