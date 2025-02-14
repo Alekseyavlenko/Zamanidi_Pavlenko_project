@@ -201,7 +201,10 @@ def main_menu(achievements, language):
                     if button_rect.collidepoint(event.pos):
                         if i == 0:  # Кнопка "Начать игру"
                             music_volume = pygame.mixer.music.get_volume()  # Получаем текущую громкость
-                            game.game_sobstvenno(harding=difficulty_level + 1, music_value=music_volume)
+                            try:
+                                game.game_sobstvenno(harding=difficulty_level + 1, music_value=music_volume)
+                            except Exception as e:
+                                print('Вы наткнулись на', e)
                             pygame.quit()
                             sys.exit()
                         elif i == 1:

@@ -1,12 +1,11 @@
-import pprint
-
 import pygame
-import os
+
 import sys
-from random import choice
-from p_classes import Board, SpritePictures, NormalSprite, HealphBar, Ground, PlayerSprite, BulletSprite, \
-    BulletMonsterSprite, Turns, Jaw, JawsBar, Heal
+
+from p_classes import HealphBar, Ground, BulletMonsterSprite, Turns, Jaw, JawsBar, Heal
+
 from p_game_classes import dogge_move, turning, dogge_search, dagge_fight
+
 import menu
 
 
@@ -104,7 +103,8 @@ def game_sobstvenno(music_value=0.0, harding=1, *args, **kwargs):
         pygame.time.Clock().tick(200)
 
 
-# def main():
-
 if __name__ == '__main__':
-    game_sobstvenno(harding=1, music_value=0.0)
+    try:
+        game_sobstvenno(harding=1, music_value=0.0)
+    except Exception as e:
+        print('Вы наткнулись на', e)
